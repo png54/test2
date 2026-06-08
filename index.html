@@ -280,6 +280,11 @@
             color: var(--gold);
             border-bottom: 2px solid var(--gold);
         }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gold);
+        }
         @media (max-width: 768px) {
             .nav-wrap { padding: 0 1rem; }
             nav ul { display: none; }
@@ -424,10 +429,13 @@
 </div>
 
 <script>
-    // ==================== البيانات ====================
+    // ==================== رابط Google Sheets الخاص بك ====================
+    const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbw0uuDrIqmp1eD4puE39bWIZN_eoO44422C5QF24H-UiUoNj3UDZD7gH8Inhfpj-jRKeA/exec";
+    
     let currentUser = null;
     let authMode = 'login';
     let currentAdminTab = 'orders';
+    let allOrdersFromSheet = [];
     
     // بيانات المدير
     const ADMIN_EMAIL = "admin@berbere.dz";
@@ -443,6 +451,35 @@
         { id: 6, name: "هودي بأكمام", price: "5200 دج", desc: "تصميم عصري", img: "https://images.unsplash.com/photo-1509942774463-acf339cf87d5?w=500" }
     ];
     
+    // ==================== دوال Google Sheets ====================
+    async function saveOrderToSheet(orderData) {
+        try {
+            const response = await fetch(GOOGLE_SHEET_API, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData)
+            });
+            console.log("Order saved to sheet:", orderData);
+            return true;
+        } catch (error) {
+            console.error('Error saving to sheet:', error);
+            return false;
+        }
+    }
+    
+    async function loadOrdersFromSheet() {
+        try {
+            const response = await fetch(GOOGLE_SHEET_API);
+            const orders = await response.json();
+            allOrdersFromSheet = orders;
+            return orders;
+        } catch (error) {
+            console.error('Error loading orders:', error);
+            return [];
+        }
+    }
+    
     // ==================== دوال المستخدمين ====================
     function loadUsers() {
         const users = localStorage.getItem('berbere_users');
@@ -455,19 +492,6 @@
     
     function saveUsers(users) {
         localStorage.setItem('berbere_users', JSON.stringify(users));
-    }
-    
-    function loadOrders() {
-        const orders = localStorage.getItem('berbere_orders');
-        if (!orders) {
-            localStorage.setItem('berbere_orders', JSON.stringify([]));
-            return [];
-        }
-        return JSON.parse(orders);
-    }
-    
-    function saveOrders(orders) {
-        localStorage.setItem('berbere_orders', JSON.stringify(orders));
     }
     
     function saveSession(user) {
@@ -618,10 +642,10 @@
     }
     
     // ==================== لوحة المستخدم ====================
-    function openUserDashboard() {
+    async function openUserDashboard() {
         if (!currentUser || isAdmin(currentUser)) return;
         
-        const orders = loadOrders();
+        const orders = await loadOrdersFromSheet();
         const userOrders = orders.filter(o => o.userEmail === currentUser.email);
         
         const content = document.getElementById('userDashboardContent');
@@ -685,7 +709,7 @@
         document.getElementById('orderForm').reset();
     }
     
-    document.getElementById('orderForm').addEventListener('submit', function(e) {
+    document.getElementById('orderForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
         if (!currentUser || !currentProduct) return;
@@ -700,27 +724,33 @@
             return;
         }
         
-        const orders = loadOrders();
-        const newOrder = {
-            id: Date.now(),
+        const orderData = {
+            orderDate: new Date().toLocaleString('ar-DZ'),
             userEmail: currentUser.email,
             userName: currentUser.fullName,
             userPhone: currentUser.phone,
             productName: currentProduct.name,
-            productId: currentProduct.id,
             price: currentProduct.price,
             size: size,
             wilaya: wilaya,
             address: address,
             notes: notes,
-            orderDate: new Date().toLocaleString('ar-DZ'),
             status: 'جديد'
         };
         
-        orders.push(newOrder);
-        saveOrders(orders);
+        // حفظ في Google Sheets
+        const saved = await saveOrderToSheet(orderData);
         
-        alert(`✅ تم استلام طلبك بنجاح!\n\nالمنتج: ${currentProduct.name}\nالمقاس: ${size}\nالولاية: ${wilaya}\n\nسنقوم بالاتصال بك قريباً`);
+        if (saved) {
+            alert(`✅ تم استلام طلبك بنجاح!\n\nالمنتج: ${currentProduct.name}\nالمقاس: ${size}\nالولاية: ${wilaya}\n\nسنقوم بالاتصال بك قريباً`);
+        } else {
+            // حفظ محلياً كنسخة احتياطية
+            const localOrders = JSON.parse(localStorage.getItem('berbere_orders_backup') || '[]');
+            localOrders.push(orderData);
+            localStorage.setItem('berbere_orders_backup', JSON.stringify(localOrders));
+            alert(`⚠️ تم حفظ طلبك محلياً بسبب مشكلة في الاتصال.\nالمنتج: ${currentProduct.name}\nسنقوم بمتابعته يدوياً`);
+        }
+        
         closeOrderModal();
     });
     
@@ -745,20 +775,20 @@
     }
     
     // ==================== لوحة المدير ====================
-    function openAdminModal() {
+    async function openAdminModal() {
         if (!currentUser || !isAdmin(currentUser)) {
             alert('هذه الصفحة مخصصة للمدير فقط');
             return;
         }
         document.getElementById('adminModal').classList.add('open');
-        showAdminTab('orders');
+        await showAdminTab('orders');
     }
     
     function closeAdminModal() {
         document.getElementById('adminModal').classList.remove('open');
     }
     
-    function showAdminTab(tab) {
+    async function showAdminTab(tab) {
         currentAdminTab = tab;
         document.querySelectorAll('.admin-tab').forEach(btn => {
             btn.classList.remove('active');
@@ -770,9 +800,10 @@
         });
         
         const content = document.getElementById('adminContent');
+        content.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
         
         if (tab === 'orders') {
-            const orders = loadOrders();
+            const orders = await loadOrdersFromSheet();
             content.innerHTML = `
                 <h3 style="color: var(--gold);">📦 جميع الطلبات (${orders.length})</h3>
                 <div class="orders-list">
@@ -784,15 +815,7 @@
                             <div>🏠 ${order.address}</div>
                             <div>📅 ${order.orderDate}</div>
                             <div style="margin-top: 0.5rem;">
-                                <label>الحالة: </label>
-                                <select class="status-select" data-order-id="${order.id}" onchange="updateOrderStatus(${order.id}, this.value)">
-                                    <option value="جديد" ${order.status === 'جديد' ? 'selected' : ''}>جديد</option>
-                                    <option value="قيد المعالجة" ${order.status === 'قيد المعالجة' ? 'selected' : ''}>قيد المعالجة</option>
-                                    <option value="تم التجهيز" ${order.status === 'تم التجهيز' ? 'selected' : ''}>تم التجهيز</option>
-                                    <option value="تم الشحن" ${order.status === 'تم الشحن' ? 'selected' : ''}>تم الشحن</option>
-                                    <option value="تم التسليم" ${order.status === 'تم التسليم' ? 'selected' : ''}>تم التسليم</option>
-                                </select>
-                                <button class="btn-small btn-danger" onclick="deleteOrder(${order.id})">🗑 حذف</button>
+                                <span class="badge">${order.status || 'جديد'}</span>
                             </div>
                         </div>
                     `).join('')}
@@ -800,7 +823,7 @@
             `;
         } else if (tab === 'users') {
             const users = loadUsers();
-            const orders = loadOrders();
+            const orders = await loadOrdersFromSheet();
             content.innerHTML = `
                 <h3 style="color: var(--gold);">👥 جميع المستخدمين (${users.length})</h3>
                 <div class="orders-list">
@@ -824,7 +847,7 @@
                 </div>
             `;
         } else if (tab === 'stats') {
-            const orders = loadOrders();
+            const orders = await loadOrdersFromSheet();
             const users = loadUsers();
             const totalSales = orders.reduce((sum, o) => {
                 const price = parseInt(o.price.replace(/\D/g, '')) || 0;
@@ -855,36 +878,12 @@
         }
     }
     
-    function updateOrderStatus(orderId, newStatus) {
-        const orders = loadOrders();
-        const orderIndex = orders.findIndex(o => o.id == orderId);
-        if (orderIndex !== -1) {
-            orders[orderIndex].status = newStatus;
-            saveOrders(orders);
-            alert(`✅ تم تحديث حالة الطلب إلى: ${newStatus}`);
-            showAdminTab(currentAdminTab);
-        }
-    }
-    
-    function deleteOrder(orderId) {
-        if (confirm('هل أنت متأكد من حذف هذا الطلب؟')) {
-            const orders = loadOrders();
-            const newOrders = orders.filter(o => o.id != orderId);
-            saveOrders(newOrders);
-            alert('تم حذف الطلب بنجاح');
-            showAdminTab(currentAdminTab);
-        }
-    }
-    
     function deleteUser(userEmail) {
         if (confirm('هل أنت متأكد من حذف هذا المستخدم؟ سيتم حذف جميع طلباته أيضاً')) {
             let users = loadUsers();
-            let orders = loadOrders();
             users = users.filter(u => u.email !== userEmail);
-            orders = orders.filter(o => o.userEmail !== userEmail);
             saveUsers(users);
-            saveOrders(orders);
-            alert('تم حذف المستخدم وجميع طلباته');
+            alert('تم حذف المستخدم');
             showAdminTab(currentAdminTab);
         }
     }
