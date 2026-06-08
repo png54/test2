@@ -430,12 +430,12 @@
 
 <script>
     // ==================== رابط Google Sheets الخاص بك ====================
-    const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbz5qXZ5_2CMWZeXCJkaCXuxvZNgvbXEI3324AOEVw3UGft_Hso83frl8EY1T8_NApao/exec";
+    const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbyUzfF18Wo0FkZqzJ2R0Sa_eN3XtPF2UD0mKvnonAPd6gW0FbmMSM8HhDHfz6Rwh2Hb/exec";
     
     let currentUser = null;
     let authMode = 'login';
     let currentAdminTab = 'orders';
-    let allOrdersFromSheet = [];
+    let allOrders = JSON.parse(localStorage.getItem('berbere_orders') || '[]');
     
     // بيانات المدير
     const ADMIN_EMAIL = "admin@berbere.dz";
@@ -460,10 +460,10 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
             });
-            console.log("✅ Order saved to sheet:", orderData);
+            console.log("✅ Order sent to sheet:", orderData);
             return true;
         } catch (error) {
-            console.error('❌ Error saving to sheet:', error);
+            console.error('❌ Error:', error);
             return false;
         }
     }
@@ -472,11 +472,10 @@
         try {
             const response = await fetch(GOOGLE_SHEET_API);
             const orders = await response.json();
-            allOrdersFromSheet = orders;
             console.log("📦 Orders loaded:", orders.length);
             return orders;
         } catch (error) {
-            console.error('❌ Error loading orders:', error);
+            console.error('❌ Error loading:', error);
             return [];
         }
     }
@@ -587,7 +586,6 @@
             return;
         }
         
-        // تسجيل الدخول كمدير
         if (authMode === 'login' && email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
             const adminUser = { id: 'admin', email: ADMIN_EMAIL, fullName: 'مدير النظام', phone: '000000000', isAdmin: true };
             saveSession(adminUser);
@@ -743,11 +741,10 @@
         
         if (saved) {
             alert(`✅ تم استلام طلبك بنجاح!\n\nالمنتج: ${currentProduct.name}\nالمقاس: ${size}\nالولاية: ${wilaya}\n\nسنقوم بالاتصال بك قريباً`);
+            closeOrderModal();
         } else {
             alert(`⚠️ حدث خطأ في حفظ طلبك. الرجاء المحاولة مرة أخرى.`);
         }
-        
-        closeOrderModal();
     });
     
     // ==================== عرض المنتجات ====================
@@ -850,32 +847,18 @@
                 return sum + price;
             }, 0);
             
-            const statusCount = {
-                'جديد': orders.filter(o => o.status === 'جديد').length,
-                'قيد المعالجة': orders.filter(o => o.status === 'قيد المعالجة').length,
-                'تم الشحن': orders.filter(o => o.status === 'تم الشحن').length,
-                'تم التسليم': orders.filter(o => o.status === 'تم التسليم').length
-            };
-            
             content.innerHTML = `
                 <div class="dashboard-stats">
                     <div class="stat-card"><div class="stat-number">${users.length}</div><div>المستخدمين</div></div>
                     <div class="stat-card"><div class="stat-number">${orders.length}</div><div>الطلبات</div></div>
                     <div class="stat-card"><div class="stat-number">${totalSales.toLocaleString()} دج</div><div>المبيعات</div></div>
                 </div>
-                <h3 style="color: var(--gold);">📊 حالة الطلبات</h3>
-                <div class="dashboard-stats">
-                    <div class="stat-card"><div class="stat-number">${statusCount['جديد']}</div><div>جديد</div></div>
-                    <div class="stat-card"><div class="stat-number">${statusCount['قيد المعالجة']}</div><div>قيد المعالجة</div></div>
-                    <div class="stat-card"><div class="stat-number">${statusCount['تم الشحن']}</div><div>تم الشحن</div></div>
-                    <div class="stat-card"><div class="stat-number">${statusCount['تم التسليم']}</div><div>تم التسليم</div></div>
-                </div>
             `;
         }
     }
     
     function deleteUser(userEmail) {
-        if (confirm('هل أنت متأكد من حذف هذا المستخدم؟ سيتم حذف جميع طلباته أيضاً')) {
+        if (confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
             let users = loadUsers();
             users = users.filter(u => u.email !== userEmail);
             saveUsers(users);
