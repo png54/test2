@@ -430,7 +430,7 @@
 
 <script>
     // ==================== رابط Google Sheets الخاص بك ====================
-    const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbw0uuDrIqmp1eD4puE39bWIZN_eoO44422C5QF24H-UiUoNj3UDZD7gH8Inhfpj-jRKeA/exec";
+    const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbz5qXZ5_2CMWZeXCJkaCXuxvZNgvbXEI3324AOEVw3UGft_Hso83frl8EY1T8_NApao/exec";
     
     let currentUser = null;
     let authMode = 'login';
@@ -460,10 +460,10 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
             });
-            console.log("Order saved to sheet:", orderData);
+            console.log("✅ Order saved to sheet:", orderData);
             return true;
         } catch (error) {
-            console.error('Error saving to sheet:', error);
+            console.error('❌ Error saving to sheet:', error);
             return false;
         }
     }
@@ -473,9 +473,10 @@
             const response = await fetch(GOOGLE_SHEET_API);
             const orders = await response.json();
             allOrdersFromSheet = orders;
+            console.log("📦 Orders loaded:", orders.length);
             return orders;
         } catch (error) {
-            console.error('Error loading orders:', error);
+            console.error('❌ Error loading orders:', error);
             return [];
         }
     }
@@ -738,17 +739,12 @@
             status: 'جديد'
         };
         
-        // حفظ في Google Sheets
         const saved = await saveOrderToSheet(orderData);
         
         if (saved) {
             alert(`✅ تم استلام طلبك بنجاح!\n\nالمنتج: ${currentProduct.name}\nالمقاس: ${size}\nالولاية: ${wilaya}\n\nسنقوم بالاتصال بك قريباً`);
         } else {
-            // حفظ محلياً كنسخة احتياطية
-            const localOrders = JSON.parse(localStorage.getItem('berbere_orders_backup') || '[]');
-            localOrders.push(orderData);
-            localStorage.setItem('berbere_orders_backup', JSON.stringify(localOrders));
-            alert(`⚠️ تم حفظ طلبك محلياً بسبب مشكلة في الاتصال.\nالمنتج: ${currentProduct.name}\nسنقوم بمتابعته يدوياً`);
+            alert(`⚠️ حدث خطأ في حفظ طلبك. الرجاء المحاولة مرة أخرى.`);
         }
         
         closeOrderModal();
