@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sami SIYOUCEF | Consultant International en Investissement</title>
+    <title>Sami SIYOUCEF | Consultant International | Expert TV & Médias</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Google Fonts -->
@@ -44,7 +44,8 @@
         }
 
         .logo-area img {
-            max-width: 180px;
+            max-width: 260px;
+            width: 100%;
             height: auto;
         }
 
@@ -130,7 +131,6 @@
             transform: translateY(-3px);
         }
 
-        /* Mobile menu button */
         .mobile-menu-btn {
             display: none;
             position: fixed;
@@ -155,7 +155,6 @@
             width: calc(100% - 280px);
         }
 
-        /* Hero Section avec slider */
         .hero-section {
             position: relative;
             height: 100vh;
@@ -220,16 +219,11 @@
         }
 
         .hero-title {
-            font-size: 1.8rem;
+            font-size: 1.3rem;
             font-weight: 500;
             color: #e6b422;
             margin-bottom: 1rem;
-        }
-
-        .hero-subtitle {
-            font-size: 1.2rem;
-            color: rgba(255,255,255,0.9);
-            margin-bottom: 2rem;
+            line-height: 1.4;
         }
 
         .hero-contact {
@@ -261,7 +255,6 @@
             border-color: #e6b422;
         }
 
-        /* Mobile Social Section (visible uniquement sur telephone) */
         .mobile-social-section {
             display: none;
             text-align: center;
@@ -302,7 +295,6 @@
             transform: translateY(-3px);
         }
 
-        /* Section commune */
         .section {
             padding: 80px 60px;
         }
@@ -339,12 +331,6 @@
             border-radius: 2px;
         }
 
-        .text-center .section-title::after {
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        /* About Grid */
         .about-grid {
             display: flex;
             flex-wrap: wrap;
@@ -369,10 +355,10 @@
         }
 
         .about-text p {
-            font-size: 1.1rem;
+            font-size: 1rem;
             line-height: 1.7;
             color: #4a4a4a;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .expertise-tags {
@@ -388,20 +374,36 @@
             border-radius: 40px;
             font-weight: 600;
             color: #1a1a1a;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
-        /* Services Cards */
+        /* SERVICES GRID - Desktop: 2 colonnes (2x2), Mobile: 1 colonne */
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
             margin-top: 50px;
         }
 
+        /* Pour les écrans larges (ordinateur) : 2 colonnes */
+        @media (min-width: 993px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+                max-width: 900px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
+        /* Pour les tablettes et mobiles : 1 colonne */
+        @media (max-width: 992px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .service-card {
             background: white;
-            padding: 40px 30px;
+            padding: 40px 25px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
@@ -422,16 +424,28 @@
         }
 
         .service-card h3 {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             margin-bottom: 15px;
         }
 
         .service-card p {
             color: #666;
             line-height: 1.6;
+            font-size: 0.95rem;
         }
 
-        /* Footer */
+        .service-description {
+            text-align: center;
+            max-width: 900px;
+            margin: 30px auto 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #1a1a1a;
+            background: #e6b42210;
+            padding: 20px;
+            border-radius: 60px;
+        }
+
         .footer {
             background: #0a0a0a;
             color: #888;
@@ -439,8 +453,10 @@
             padding: 40px;
             font-size: 0.9rem;
         }
+        .footer p {
+            margin-bottom: 10px;
+        }
 
-        /* Animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -452,7 +468,6 @@
             }
         }
 
-        /* ========== RESPONSIVE MOBILE ========== */
         @media (max-width: 992px) {
             #header-outer {
                 transform: translateX(-100%);
@@ -470,21 +485,14 @@
                 width: 100%;
             }
             .section {
-                padding: 60px 30px;
+                padding: 50px 25px;
             }
             .hero-content h1 {
-                font-size: 2.5rem;
+                font-size: 2.2rem;
             }
             .hero-title {
-                font-size: 1.3rem;
+                font-size: 1rem;
             }
-
-            /* Supprimer la 3ème image du slider sur mobile (seulement la troisième) */
-            .slide:nth-child(3) {
-                display: none;
-            }
-
-            /* Afficher la section sociale mobile */
             .mobile-social-section {
                 display: block;
             }
@@ -502,17 +510,19 @@
             .expertise-tags {
                 justify-content: center;
             }
+            .service-description {
+                font-size: 1rem;
+                padding: 15px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Mobile Menu Button -->
     <div class="mobile-menu-btn" id="mobileMenuBtn">
         <i class="fas fa-bars"></i>
     </div>
 
-    <!-- Left Header (Desktop: visible, Mobile: caché dans menu burger) -->
     <div id="header-outer">
         <div class="logo-area">
             <img src="https://d.top4top.io/p_3813aq2ta1.jpg" alt="Sami SIYOUCEF Logo">
@@ -521,7 +531,7 @@
             <ul>
                 <li><a href="#accueil">Accueil</a></li>
                 <li><a href="#a-propos">À propos</a></li>
-                <li><a href="#services">Expertises</a></li>
+                <li><a href="#services">Services</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </div>
@@ -537,20 +547,22 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div id="main-content">
-        <!-- Hero Section with Slider -->
         <section class="hero-section" id="accueil">
             <div class="slider-bg" id="sliderBg">
-                <div class="slide" style="background-image: url('https://a.top4top.io/p_381381ukb2.jpg');"></div>
-                <div class="slide" style="background-image: url('https://b.top4top.io/p_38130gqc03.jpg');"></div>
-                <div class="slide" style="background-image: url('https://c.top4top.io/p_3813vnskk4.jpg');"></div>
+                <div class="slide" style="background-image: url('https://e.top4top.io/p_3814d5ow11.jpg');"></div>
+                <div class="slide" style="background-image: url('https://g.top4top.io/p_3814ov2rn2.jpg');"></div>
+                <div class="slide" style="background-image: url('https://h.top4top.io/p_3814hkmzx3.jpg');"></div>
+                <div class="slide" style="background-image: url('https://i.top4top.io/p_3814h9v0n4.jpg');"></div>
+                <div class="slide" style="background-image: url('https://j.top4top.io/p_38141wwos5.jpg');"></div>
+                <div class="slide" style="background-image: url('https://k.top4top.io/p_3814dzy806.jpg');"></div>
             </div>
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <h1>Sami SIYOUCEF</h1>
-                <div class="hero-title">Consultant international en investissement</div>
-                <div class="hero-subtitle">EXPERT EN COMMUNICATION</div>
+                <div class="hero-title">
+                    Consultant international en investissement & stratégie médias
+                </div>
                 <div class="hero-contact">
                     <a href="mailto:siyoucef.s@gmail.com" class="contact-btn"><i class="fas fa-envelope"></i> siyoucef.s@gmail.com</a>
                     <a href="https://wa.me/21693748457" target="_blank" class="contact-btn"><i class="fab fa-whatsapp"></i> 0021693748457</a>
@@ -558,7 +570,6 @@
             </div>
         </section>
 
-        <!-- Mobile Social Section (apparaît uniquement sur téléphone, après la hero section) -->
         <div class="mobile-social-section">
             <h3>Suivez-moi</h3>
             <div class="mobile-social-icons">
@@ -570,7 +581,6 @@
             </div>
         </div>
 
-        <!-- About Section -->
         <section class="section section-white" id="a-propos">
             <div class="container-custom">
                 <div class="about-grid">
@@ -579,71 +589,73 @@
                     </div>
                     <div class="about-text">
                         <h2 class="section-title">À propos</h2>
-                        <p><strong>Sami SIYOUCEF</strong> est consultant international en investissement et expert en communication. Avec une expérience approfondie sur les marchés mondiaux, il accompagne entreprises et institutions dans leurs stratégies d'investissement et de développement.</p>
-                        <p>Sa double expertise permet d'allier performance financière et communication stratégique, garantissant des résultats concrets et une visibilité exceptionnelle. Sami intervient également en tant que conseiller pour des projets à fort impact et des levées de fonds internationales.</p>
+                        <p><strong>Sami SIYOUCEF</strong> est un consultant international en investissement et un expert en communication et management des médias, disposant de plus de 25 années d'expérience dans le journalisme, la direction éditoriale et la gestion de projets médiatiques à grande échelle.</p>
+                        <p>Il est membre du Conseil d'administration de la CGEA (Confédération Générale des Entreprises Algériennes), où il contribue à la réflexion stratégique sur le développement économique et l'investissement.</p>
+                        <p>Titulaire d'un MBA en investissement, il possède également une solide formation académique en communication et médias : Master II en communication et médias modernes, Master en gestion des grands médias, Licence en sciences de l'information et de la communication.</p>
+                        <p>Au cours de sa carrière, Sami SIYOUCEF a piloté et accompagné le lancement de <strong>sept projets de chaînes de télévision</strong> en Algérie et dans l'espace méditerranéen, mettant son expertise au service du développement des médias, de la stratégie de contenu, de la gouvernance et de l'innovation.</p>
+                        <p>Son parcours unique, à la croisée de l'investissement, de la communication et du management des médias, fait de lui un interlocuteur privilégié pour les entreprises, les investisseurs et les organisations souhaitant développer des projets à fort impact dans la région méditerranéenne.</p>
                         <div class="expertise-tags">
-                            <span>Conseil en investissement</span>
-                            <span>Communication stratégique</span>
-                            <span>Marchés internationaux</span>
-                            <span>Prise de parole & médias</span>
-                            <span>Due diligence</span>
-                            <span>Levée de fonds</span>
+                            <span>Investissement international</span>
+                            <span>Communication & médias</span>
+                            <span>Management de projets TV</span>
+                            <span>Conseil stratégique</span>
+                            <span>Développement méditerranéen</span>
+                            <span>Lancement chaînes TV</span>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Services Section -->
         <section class="section section-dark" id="services">
             <div class="container-custom">
                 <div style="text-align: center;">
-                    <h2 class="section-title">Mes expertises</h2>
-                    <p style="max-width: 600px; margin: 20px auto 0; color: #666;">Des compétences complémentaires pour un accompagnement sur mesure</p>
+                    <h2 class="section-title">Mes Services</h2>
+                    <div class="service-description">
+                        étude, conception, gestion et le lancement clés en main de projets TV et Grand Medias
+                    </div>
                 </div>
                 <div class="services-grid">
                     <div class="service-card">
-                        <i class="fas fa-chart-line"></i>
-                        <h3>Investissement International</h3>
-                        <p>Analyse des marchés, identification d'opportunités et optimisation des rendements sur les marchés émergents et développés.</p>
+                        <i class="fas fa-tv"></i>
+                        <h3>Étude de projets TV</h3>
+                        <p>Analyse de faisabilité, étude de marché et audit stratégique pour les projets télévisuels et médiatiques.</p>
                     </div>
                     <div class="service-card">
-                        <i class="fas fa-bullhorn"></i>
-                        <h3>Communication Stratégique</h3>
-                        <p>Élaboration de stratégies de communication percutantes, gestion de réputation et conseil en image de marque.</p>
+                        <i class="fas fa-pen-ruler"></i>
+                        <h3>Conception</h3>
+                        <p>Création de concepts innovants, design de formats TV et développement de stratégies éditoriales.</p>
                     </div>
                     <div class="service-card">
-                        <i class="fas fa-handshake"></i>
-                        <h3>Conseil en Négociation</h3>
-                        <p>Accompagnement dans les négociations internationales, due diligence et structuration de partenariats.</p>
+                        <i class="fas fa-sliders-h"></i>
+                        <h3>Gestion</h3>
+                        <p>Coordination technique, budgétaire et humaine. Suivi de production et gestion des équipes médias.</p>
                     </div>
                     <div class="service-card">
-                        <i class="fas fa-chalkboard-user"></i>
-                        <h3>Formation & Conférences</h3>
-                        <p>Interventions sur mesure pour entreprises, conférences internationales et séminaires de leadership.</p>
+                        <i class="fas fa-rocket"></i>
+                        <h3>Lancement clé en main</h3>
+                        <p>Déploiement complet, stratégie de lancement, promotion, diffusion et suivi post-lancement.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Footer -->
         <footer class="footer">
-            <p>&copy; 2026 Sami SIYOUCEF - Consultant International en Investissement. Tous droits réservés.</p>
+            <p>Sami SIYOUCEF</p>
+            <p>Consultant international en investissement</p>
+            <p>Expert en communication et management des médias</p>
+            <p>25 ans d'expérience au service de l'innovation, des entreprises et des médias</p>
+            <p style="margin-top: 20px;">&copy; 2026 Sami SIYOUCEF - Consultant International. Tous droits réservés.</p>
         </footer>
     </div>
 
     <script>
-        // Slider automatique
         const slides = document.querySelectorAll('.slide');
         let currentIndex = 0;
-        // Compter uniquement les slides visibles (sur mobile le 3ème est caché)
-        const visibleSlides = Array.from(slides).filter(slide => window.getComputedStyle(slide).display !== 'none');
         
         function updateSlider() {
-            // Cacher toutes les slides
             slides.forEach(slide => slide.classList.remove('active'));
-            // Trouver les slides visibles
-            const visible = Array.from(slides).filter(slide => window.getComputedStyle(slide).display !== 'none');
+            const visible = Array.from(slides);
             if (visible.length > 0 && currentIndex < visible.length) {
                 visible[currentIndex].classList.add('active');
             }
@@ -652,9 +664,8 @@
         if (slides.length > 0) {
             updateSlider();
             setInterval(() => {
-                const visible = Array.from(slides).filter(slide => window.getComputedStyle(slide).display !== 'none');
+                const visible = Array.from(slides);
                 if (visible.length > 0) {
-                    // Enlever active de la slide courante
                     if (visible[currentIndex]) visible[currentIndex].classList.remove('active');
                     currentIndex = (currentIndex + 1) % visible.length;
                     if (visible[currentIndex]) visible[currentIndex].classList.add('active');
@@ -662,17 +673,6 @@
             }, 5000);
         }
 
-        // Réévaluer le slider au redimensionnement (pour les changements d'orientation)
-        window.addEventListener('resize', function() {
-            const visible = Array.from(slides).filter(slide => window.getComputedStyle(slide).display !== 'none');
-            if (visible.length > 0) {
-                // Réinitialiser l'index si nécessaire
-                if (currentIndex >= visible.length) currentIndex = 0;
-                updateSlider();
-            }
-        });
-
-        // Menu mobile
         const mobileBtn = document.getElementById('mobileMenuBtn');
         const headerOuter = document.getElementById('header-outer');
         mobileBtn.addEventListener('click', () => {
@@ -687,7 +687,6 @@
             }
         });
 
-        // Fermer le menu quand on clique sur un lien
         document.querySelectorAll('.nav-menu a').forEach(link => {
             link.addEventListener('click', () => {
                 headerOuter.classList.remove('open');
@@ -697,7 +696,6 @@
             });
         });
 
-        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
