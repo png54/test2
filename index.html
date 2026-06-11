@@ -261,6 +261,47 @@
             border-color: #e6b422;
         }
 
+        /* Mobile Social Section (visible uniquement sur telephone) */
+        .mobile-social-section {
+            display: none;
+            text-align: center;
+            padding: 50px 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .mobile-social-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .mobile-social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .mobile-social-icons a {
+            color: white;
+            font-size: 1.8rem;
+            transition: all 0.3s ease;
+            width: 55px;
+            height: 55px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .mobile-social-icons a:hover {
+            color: #e6b422;
+            background: rgba(230,180,34,0.2);
+            transform: translateY(-3px);
+        }
+
         /* Section commune */
         .section {
             padding: 80px 60px;
@@ -411,7 +452,7 @@
             }
         }
 
-        /* Responsive */
+        /* ========== RESPONSIVE MOBILE ========== */
         @media (max-width: 992px) {
             #header-outer {
                 transform: translateX(-100%);
@@ -437,6 +478,16 @@
             .hero-title {
                 font-size: 1.3rem;
             }
+
+            /* Supprimer la 3ème image du slider sur mobile (seulement la troisième) */
+            .slide:nth-child(3) {
+                display: none;
+            }
+
+            /* Afficher la section sociale mobile */
+            .mobile-social-section {
+                display: block;
+            }
         }
 
         @media (max-width: 768px) {
@@ -461,7 +512,7 @@
         <i class="fas fa-bars"></i>
     </div>
 
-    <!-- Left Header -->
+    <!-- Left Header (Desktop: visible, Mobile: caché dans menu burger) -->
     <div id="header-outer">
         <div class="logo-area">
             <img src="https://d.top4top.io/p_3813aq2ta1.jpg" alt="Sami SIYOUCEF Logo">
@@ -506,6 +557,18 @@
                 </div>
             </div>
         </section>
+
+        <!-- Mobile Social Section (apparaît uniquement sur téléphone, après la hero section) -->
+        <div class="mobile-social-section">
+            <h3>Suivez-moi</h3>
+            <div class="mobile-social-icons">
+                <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
 
         <!-- About Section -->
         <section class="section section-white" id="a-propos">
@@ -573,14 +636,41 @@
         // Slider automatique
         const slides = document.querySelectorAll('.slide');
         let currentIndex = 0;
+        // Compter uniquement les slides visibles (sur mobile le 3ème est caché)
+        const visibleSlides = Array.from(slides).filter(slide => window.getComputedStyle(slide).display !== 'none');
+        
+        function updateSlider() {
+            // Cacher toutes les slides
+            slides.forEach(slide => slide.classList.remove('active'));
+            // Trouver les slides visibles
+            const visible = Array.from(slides).filter(slide => window.getComputedStyle(slide).display !== 'none');
+            if (visible.length > 0 && currentIndex < visible.length) {
+                visible[currentIndex].classList.add('active');
+            }
+        }
+
         if (slides.length > 0) {
-            slides[0].classList.add('active');
+            updateSlider();
             setInterval(() => {
-                slides[currentIndex].classList.remove('active');
-                currentIndex = (currentIndex + 1) % slides.length;
-                slides[currentIndex].classList.add('active');
+                const visible = Array.from(slides).filter(slide => window.getComputedStyle(slide).display !== 'none');
+                if (visible.length > 0) {
+                    // Enlever active de la slide courante
+                    if (visible[currentIndex]) visible[currentIndex].classList.remove('active');
+                    currentIndex = (currentIndex + 1) % visible.length;
+                    if (visible[currentIndex]) visible[currentIndex].classList.add('active');
+                }
             }, 5000);
         }
+
+        // Réévaluer le slider au redimensionnement (pour les changements d'orientation)
+        window.addEventListener('resize', function() {
+            const visible = Array.from(slides).filter(slide => window.getComputedStyle(slide).display !== 'none');
+            if (visible.length > 0) {
+                // Réinitialiser l'index si nécessaire
+                if (currentIndex >= visible.length) currentIndex = 0;
+                updateSlider();
+            }
+        });
 
         // Menu mobile
         const mobileBtn = document.getElementById('mobileMenuBtn');
