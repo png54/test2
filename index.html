@@ -1,0 +1,2206 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Numidia Prime — De l'Algérie au Monde Digital</title>
+<meta name="description" content="Numidia Prime est une marque digitale algérienne premium à vision internationale. Innovation, créativité, technologie et expériences digitales du futur.">
+<meta name="keywords" content="Numidia Prime, digital, Algeria, Algérie, innovation, technologie, premium">
+<meta property="og:title" content="Numidia Prime">
+<meta property="og:description" content="De l'Algérie au Monde Digital.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Noto+Kufi+Arabic:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================
+   NUMIDIA PRIME — DESIGN TOKENS
+   ========================================= */
+:root {
+  --void: #05080F;
+  --abyss: #070A14;
+  --deep: #0D1220;
+  --surface: #111827;
+  --border: rgba(255,255,255,0.07);
+  --border-glow: rgba(0,229,192,0.2);
+  --teal: #00E5C0;
+  --teal-dim: rgba(0,229,192,0.15);
+  --teal-glow: rgba(0,229,192,0.08);
+  --gold: #C8973A;
+  --gold-light: #E2B96A;
+  --bone: #F0EDE6;
+  --muted: rgba(240,237,230,0.45);
+  --faint: rgba(240,237,230,0.18);
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-arabic: 'Noto Kufi Arabic', sans-serif;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-inout: cubic-bezier(0.45, 0, 0.55, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* =========================================
+   RESET & BASE
+   ========================================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--void);
+  color: var(--bone);
+  font-family: var(--font-body);
+  font-weight: 300;
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+[lang="ar"] body, [lang="ar"] * { font-family: var(--font-arabic) !important; }
+html[dir="rtl"] { direction: rtl; }
+::selection { background: var(--teal); color: var(--void); }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+/* =========================================
+   SCROLLBAR
+   ========================================= */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--void); }
+::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 2px; }
+
+/* =========================================
+   LOADING SCREEN
+   ========================================= */
+#loader {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--void);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  transition: opacity 0.8s var(--ease-out), visibility 0.8s;
+}
+#loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-inner { text-align: center; position: relative; }
+.loader-ring {
+  width: 80px; height: 80px;
+  border: 1px solid var(--border);
+  border-top-color: var(--teal);
+  border-right-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+  margin: 0 auto 2rem;
+}
+.loader-ring::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid transparent;
+  border-bottom-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite reverse;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader-wordmark {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--bone);
+  opacity: 0;
+  animation: fadeUp 0.6s var(--ease-out) 0.3s forwards;
+}
+.loader-wordmark span { color: var(--teal); }
+.loader-progress {
+  position: absolute;
+  bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+  width: 120px; height: 1px;
+  background: var(--border);
+}
+.loader-progress-bar {
+  height: 100%; background: var(--teal);
+  width: 0%; transition: width 2s var(--ease-out);
+  box-shadow: 0 0 8px var(--teal);
+}
+.loader-pct {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 0.5rem;
+  position: absolute;
+  bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+/* =========================================
+   CURSOR
+   ========================================= */
+.cursor-dot, .cursor-ring {
+  position: fixed; pointer-events: none;
+  border-radius: 50%; z-index: 9998;
+  transition: opacity 0.3s;
+}
+.cursor-dot {
+  width: 5px; height: 5px;
+  background: var(--teal);
+  top: -2.5px; left: -2.5px;
+  box-shadow: 0 0 8px var(--teal);
+}
+.cursor-ring {
+  width: 32px; height: 32px;
+  border: 1px solid rgba(0,229,192,0.5);
+  top: -16px; left: -16px;
+  transition: width 0.3s var(--ease-out), height 0.3s var(--ease-out), border-color 0.3s, opacity 0.3s;
+}
+.cursor-ring.hovered { width: 56px; height: 56px; border-color: var(--teal); }
+@media (max-width: 768px) { .cursor-dot, .cursor-ring { display: none; } }
+
+/* =========================================
+   NAVIGATION
+   ========================================= */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 1.5rem 4rem;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background 0.5s, backdrop-filter 0.5s, padding 0.4s;
+}
+nav.scrolled {
+  background: rgba(5,8,15,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 1rem 4rem;
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  display: flex; align-items: center; gap: 0.6rem;
+  z-index: 10;
+}
+.nav-logo .dot { color: var(--teal); }
+.nav-logo-mark {
+  width: 28px; height: 28px;
+  border: 1.5px solid var(--teal);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.nav-logo-mark::before {
+  content: '';
+  width: 10px; height: 10px;
+  background: var(--teal);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+.nav-links {
+  display: flex; align-items: center; gap: 3rem;
+  list-style: none;
+}
+.nav-links a {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  position: relative;
+  transition: color 0.3s;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0; right: 0; height: 1px;
+  background: var(--teal);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s var(--ease-out);
+}
+.nav-links a:hover { color: var(--bone); }
+.nav-links a:hover::after { transform: scaleX(1); }
+.nav-lang {
+  display: flex; gap: 0.5rem; align-items: center;
+}
+.lang-btn {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0.3rem 0.6rem;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+.lang-btn.active { color: var(--teal); border-color: var(--border-glow); }
+.lang-btn:hover { color: var(--bone); }
+.nav-cta {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--void);
+  background: var(--teal);
+  padding: 0.65rem 1.5rem;
+  border-radius: 6px;
+  transition: all 0.3s var(--ease-out);
+  box-shadow: 0 0 20px rgba(0,229,192,0.25);
+}
+.nav-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 30px rgba(0,229,192,0.4);
+}
+.hamburger {
+  display: none;
+  flex-direction: column; gap: 5px;
+  width: 28px; cursor: pointer; z-index: 10;
+}
+.hamburger span {
+  height: 1.5px; background: var(--bone); width: 100%;
+  transition: transform 0.3s, opacity 0.3s, width 0.3s;
+  display: block;
+}
+.hamburger span:nth-child(2) { width: 70%; }
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4.5px, 4.5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; width: 100%; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px, -4.5px); }
+
+/* Mobile Nav */
+.mobile-nav {
+  display: none; position: fixed; inset: 0; z-index: 999;
+  background: rgba(5,8,15,0.97);
+  backdrop-filter: blur(30px);
+  flex-direction: column; align-items: center; justify-content: center; gap: 2.5rem;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s var(--ease-out);
+}
+.mobile-nav.open { opacity: 1; pointer-events: all; }
+.mobile-nav a {
+  font-family: var(--font-display);
+  font-size: 2rem; font-weight: 700;
+  color: var(--bone); opacity: 0.7;
+  letter-spacing: 0.05em;
+  transition: opacity 0.3s, color 0.3s;
+}
+.mobile-nav a:hover { opacity: 1; color: var(--teal); }
+.mobile-nav-lang { display: flex; gap: 1rem; margin-top: 1rem; }
+
+/* =========================================
+   HERO
+   ========================================= */
+#hero {
+  position: relative; height: 100vh; min-height: 700px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+}
+.hero-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+}
+.hero-gradient {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,229,192,0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 80% 20%, rgba(200,151,58,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 40% at 15% 80%, rgba(0,229,192,0.04) 0%, transparent 60%);
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+}
+.hero-content {
+  position: relative; z-index: 2;
+  text-align: center;
+  padding: 0 2rem;
+  max-width: 1100px;
+}
+.hero-eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 2rem;
+  display: inline-flex; align-items: center; gap: 1rem;
+  opacity: 0; animation: fadeUp 0.8s var(--ease-out) 0.5s forwards;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: ''; display: block; width: 30px; height: 1px;
+  background: var(--teal); opacity: 0.5;
+}
+.hero-headline {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+.hero-line {
+  display: block;
+  overflow: hidden;
+}
+.hero-line-inner {
+  display: block;
+  transform: translateY(110%);
+  animation: slideUp 1s var(--ease-out) forwards;
+}
+.hero-line:nth-child(1) .hero-line-inner { animation-delay: 0.6s; font-size: clamp(3.5rem, 9vw, 9.5rem); }
+.hero-line:nth-child(2) .hero-line-inner {
+  animation-delay: 0.75s;
+  font-size: clamp(3rem, 7.5vw, 8rem);
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(240,237,230,0.3);
+}
+.hero-line:nth-child(3) .hero-line-inner {
+  animation-delay: 0.9s;
+  font-size: clamp(3.5rem, 9vw, 9.5rem);
+  color: var(--teal);
+}
+.hero-sub {
+  font-size: 1rem; font-weight: 300;
+  color: var(--muted); max-width: 420px; margin: 0 auto 3.5rem;
+  letter-spacing: 0.02em; line-height: 1.8;
+  opacity: 0; animation: fadeUp 0.8s var(--ease-out) 1.1s forwards;
+}
+.hero-actions {
+  display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp 0.8s var(--ease-out) 1.3s forwards;
+}
+.btn-primary {
+  font-family: var(--font-display);
+  font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--void);
+  background: var(--teal);
+  padding: 1rem 2.5rem;
+  border-radius: 8px;
+  display: inline-flex; align-items: center; gap: 0.8rem;
+  transition: all 0.4s var(--ease-out);
+  box-shadow: 0 0 30px rgba(0,229,192,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 40px rgba(0,229,192,0.5);
+}
+.btn-primary svg { transition: transform 0.3s var(--ease-out); }
+.btn-primary:hover svg { transform: translateX(4px); }
+.btn-ghost {
+  font-family: var(--font-display);
+  font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--bone);
+  padding: 1rem 2.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  display: inline-flex; align-items: center; gap: 0.8rem;
+  transition: all 0.4s var(--ease-out);
+  backdrop-filter: blur(10px);
+}
+.btn-ghost:hover {
+  border-color: var(--border-glow);
+  color: var(--teal);
+  background: var(--teal-glow);
+  transform: translateY(-3px);
+}
+.hero-scroll {
+  position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
+  opacity: 0; animation: fadeUp 0.8s var(--ease-out) 1.6s forwards;
+  z-index: 3;
+}
+.scroll-line {
+  width: 1px; height: 50px;
+  background: linear-gradient(to bottom, transparent, var(--teal));
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+.scroll-text {
+  font-family: var(--font-display);
+  font-size: 0.6rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--muted);
+  writing-mode: vertical-rl; transform: rotate(180deg);
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(1); }
+  50% { opacity: 1; transform: scaleY(1.1); }
+}
+
+/* =========================================
+   TIFINAGH PATTERN DIVIDER
+   ========================================= */
+.pattern-divider {
+  position: relative; height: 120px; overflow: hidden;
+  display: flex; align-items: center;
+}
+.pattern-line {
+  position: absolute; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--teal), var(--gold), var(--teal), transparent);
+  opacity: 0.3;
+}
+.pattern-symbols {
+  position: absolute; left: 0; right: 0;
+  display: flex; justify-content: center; gap: 3rem;
+  color: var(--faint); font-size: 1.2rem;
+  user-select: none;
+}
+.pattern-glyph {
+  width: 20px; height: 20px; position: relative;
+  opacity: 0.25;
+}
+
+/* =========================================
+   SECTION BASE
+   ========================================= */
+section {
+  position: relative;
+  padding: 8rem 4rem;
+}
+.container {
+  max-width: 1200px; margin: 0 auto;
+}
+.section-label {
+  font-family: var(--font-display);
+  font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--teal);
+  display: inline-flex; align-items: center; gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.section-label::before {
+  content: ''; width: 24px; height: 1px;
+  background: var(--teal);
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 800; line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin-bottom: 1.5rem;
+}
+.section-title em {
+  font-style: normal;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(0,229,192,0.5);
+  background: linear-gradient(135deg, var(--teal), var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* fallback for stroke */
+  background-clip: text;
+}
+.section-desc {
+  font-size: 1rem; color: var(--muted);
+  max-width: 500px; line-height: 1.8;
+}
+
+/* Reveal animation */
+.reveal {
+  opacity: 0; transform: translateY(40px);
+  transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-left {
+  opacity: 0; transform: translateX(-40px);
+  transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+}
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+.reveal-right {
+  opacity: 0; transform: translateX(40px);
+  transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+}
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+/* =========================================
+   PHILOSOPHY / MANIFESTO SECTION
+   ========================================= */
+#philosophy {
+  background: var(--abyss);
+  padding: 10rem 4rem;
+}
+.philosophy-inner {
+  max-width: 900px; margin: 0 auto; text-align: center;
+}
+.manifesto-text {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  font-weight: 700; line-height: 1.3;
+  letter-spacing: -0.02em;
+  margin-bottom: 3rem;
+}
+.manifesto-text .accent { color: var(--teal); }
+.manifesto-text .gold { color: var(--gold); }
+.manifesto-body {
+  font-size: 1.05rem; color: var(--muted); line-height: 1.9;
+  max-width: 620px; margin: 0 auto 4rem;
+}
+.manifesto-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 2px; background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+}
+.stat-item {
+  background: var(--deep);
+  padding: 2.5rem 2rem; text-align: center;
+  position: relative; overflow: hidden;
+  transition: background 0.3s;
+}
+.stat-item::before {
+  content: '';
+  position: absolute; top: 0; left: 50%; right: 50%;
+  height: 1px; background: var(--teal);
+  transition: left 0.5s var(--ease-out), right 0.5s var(--ease-out);
+}
+.stat-item:hover::before { left: 0; right: 0; }
+.stat-item:hover { background: rgba(13,18,32,0.8); }
+.stat-number {
+  font-family: var(--font-display);
+  font-size: 3rem; font-weight: 800;
+  line-height: 1; margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--teal), var(--gold-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-label {
+  font-size: 0.75rem; color: var(--muted);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  font-family: var(--font-display); font-weight: 500;
+}
+
+/* =========================================
+   SERVICES
+   ========================================= */
+#services {
+  background: var(--void);
+}
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 20px; overflow: hidden;
+  margin-top: 5rem;
+}
+.service-card {
+  background: var(--abyss);
+  padding: 3rem 2.5rem;
+  position: relative; overflow: hidden;
+  cursor: pointer;
+  transition: background 0.4s var(--ease-out);
+}
+.service-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--teal-glow), transparent);
+  opacity: 0; transition: opacity 0.4s;
+}
+.service-card::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 100%;
+  height: 1px; background: var(--teal);
+  transition: right 0.5s var(--ease-out);
+}
+.service-card:hover::after { right: 0; }
+.service-card:hover::before { opacity: 1; }
+.service-card:hover { background: var(--deep); }
+.service-num {
+  font-family: var(--font-display);
+  font-size: 0.65rem; font-weight: 700;
+  letter-spacing: 0.25em; color: var(--teal);
+  opacity: 0.6; margin-bottom: 2rem;
+  display: block;
+}
+.service-icon {
+  width: 48px; height: 48px; margin-bottom: 1.8rem;
+  position: relative;
+}
+.service-icon svg { width: 100%; height: 100%; }
+.service-name {
+  font-family: var(--font-display);
+  font-size: 1.3rem; font-weight: 700;
+  line-height: 1.2; margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+.service-desc {
+  font-size: 0.88rem; color: var(--muted);
+  line-height: 1.7; margin-bottom: 2rem;
+}
+.service-arrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--teal); opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+}
+.service-arrow svg { transition: transform 0.3s var(--ease-out); }
+.service-card:hover .service-arrow { opacity: 1; }
+.service-card:hover .service-arrow svg { transform: translateX(5px); }
+
+/* =========================================
+   MARQUEE
+   ========================================= */
+.marquee-section {
+  padding: 2rem 0; overflow: hidden;
+  background: var(--deep);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.marquee-track {
+  display: flex; gap: 0;
+  animation: marquee 30s linear infinite;
+  white-space: nowrap;
+}
+.marquee-item {
+  padding: 0 3rem;
+  font-family: var(--font-display);
+  font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--faint);
+  display: inline-flex; align-items: center; gap: 3rem;
+  flex-shrink: 0;
+}
+.marquee-item::after {
+  content: '◆'; font-size: 0.4rem; color: var(--teal); opacity: 0.6;
+}
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* =========================================
+   VISION / PROCESS SECTION
+   ========================================= */
+#vision {
+  background: var(--abyss);
+}
+.vision-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8rem; align-items: center; margin-top: 4rem;
+}
+.vision-visual {
+  position: relative; height: 500px;
+}
+.vision-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(1px);
+}
+.vision-orb-1 {
+  width: 280px; height: 280px;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  border: 1px solid var(--border-glow);
+  animation: orbFloat 6s ease-in-out infinite;
+}
+.vision-orb-2 {
+  width: 200px; height: 200px;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  border: 1px solid rgba(200,151,58,0.2);
+  animation: orbFloat 4s ease-in-out 1s infinite reverse;
+}
+.vision-orb-3 {
+  width: 120px; height: 120px;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(0,229,192,0.15), transparent);
+  animation: orbFloat 5s ease-in-out 0.5s infinite;
+}
+.vision-center-dot {
+  position: absolute; top: 50%; left: 50%;
+  width: 60px; height: 60px; transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--deep);
+  border: 1px solid var(--border-glow);
+  display: flex; align-items: center; justify-content: center;
+}
+.vision-center-dot::before {
+  content: '';
+  width: 14px; height: 14px;
+  background: var(--teal);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+.vision-satellite {
+  position: absolute;
+  width: 8px; height: 8px;
+  background: var(--teal);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--teal);
+}
+.vision-satellite:nth-child(1) { top: 10%; right: 20%; animation: satOrbit1 8s linear infinite; }
+.vision-satellite:nth-child(2) { bottom: 15%; left: 15%; animation: satOrbit2 12s linear infinite; }
+.vision-satellite:nth-child(3) { top: 40%; left: 5%; width: 5px; height: 5px; background: var(--gold); box-shadow: 0 0 8px var(--gold); animation: satOrbit3 10s linear infinite; }
+@keyframes satOrbit1 {
+  from { transform: rotate(0deg) translateX(140px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(140px) rotate(-360deg); }
+}
+@keyframes satOrbit2 {
+  from { transform: rotate(60deg) translateX(100px) rotate(-60deg); }
+  to { transform: rotate(420deg) translateX(100px) rotate(-420deg); }
+}
+@keyframes satOrbit3 {
+  from { transform: rotate(120deg) translateX(90px) rotate(-120deg); }
+  to { transform: rotate(480deg) translateX(90px) rotate(-480deg); }
+}
+@keyframes orbFloat {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, calc(-50% - 12px)) scale(1.02); }
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.4); opacity: 1; }
+}
+.vision-steps { display: flex; flex-direction: column; gap: 2.5rem; }
+.vision-step {
+  display: flex; gap: 1.5rem; align-items: flex-start;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: border-color 0.3s, background 0.3s, transform 0.4s var(--ease-out);
+}
+.vision-step:hover {
+  border-color: var(--border-glow);
+  background: var(--teal-glow);
+  transform: translateX(8px);
+}
+.step-num {
+  font-family: var(--font-display);
+  font-size: 0.65rem; font-weight: 800;
+  letter-spacing: 0.15em; color: var(--teal);
+  flex-shrink: 0; padding-top: 0.1rem;
+  background: var(--teal-dim);
+  border-radius: 6px;
+  padding: 0.4rem 0.7rem;
+}
+.step-content {}
+.step-title {
+  font-family: var(--font-display);
+  font-size: 1rem; font-weight: 700;
+  margin-bottom: 0.4rem; letter-spacing: -0.01em;
+}
+.step-desc { font-size: 0.87rem; color: var(--muted); line-height: 1.6; }
+
+/* =========================================
+   WORK / PROJECTS
+   ========================================= */
+#work {
+  background: var(--void);
+  overflow: hidden;
+}
+.work-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 5rem; flex-wrap: wrap; gap: 2rem;
+}
+.projects-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 1.5px; background: var(--border);
+  border-radius: 20px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.project-card {
+  position: relative; overflow: hidden;
+  cursor: pointer; background: var(--abyss);
+  min-height: 300px;
+}
+.project-card:first-child { grid-row: span 2; min-height: 580px; }
+.project-bg {
+  position: absolute; inset: 0;
+  transition: transform 0.8s var(--ease-out), filter 0.6s;
+  will-change: transform;
+}
+.project-card:hover .project-bg { transform: scale(1.06); filter: brightness(1.15); }
+.project-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(5,8,15,0.95) 0%, rgba(5,8,15,0.3) 60%, transparent 100%);
+}
+.project-info {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 2.5rem;
+  transform: translateY(20px);
+  transition: transform 0.5s var(--ease-out);
+}
+.project-card:hover .project-info { transform: translateY(0); }
+.project-cat {
+  font-family: var(--font-display);
+  font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 0.7rem;
+  display: block;
+}
+.project-name {
+  font-family: var(--font-display);
+  font-size: 1.5rem; font-weight: 800;
+  letter-spacing: -0.02em; line-height: 1.1;
+  margin-bottom: 0.7rem;
+}
+.project-name-sm {
+  font-family: var(--font-display);
+  font-size: 1.1rem; font-weight: 700;
+  letter-spacing: -0.01em; margin-bottom: 0.5rem;
+}
+.project-year {
+  font-family: var(--font-display);
+  font-size: 0.7rem; color: var(--muted);
+  letter-spacing: 0.1em;
+}
+.project-hover-tag {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--teal);
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 0.4s, transform 0.4s;
+  margin-top: 0.8rem;
+}
+.project-card:hover .project-hover-tag { opacity: 1; transform: translateY(0); }
+
+/* Gradient project backgrounds */
+.proj-bg-1 { background: linear-gradient(135deg, #0D1220 0%, #162540 30%, #0A1A30 60%, #070D1A 100%); }
+.proj-bg-2 { background: linear-gradient(135deg, #0A1520 0%, #121A30 100%); }
+.proj-bg-3 { background: linear-gradient(135deg, #100A20 0%, #1A1030 100%); }
+.proj-inner-art { position: absolute; inset: 0; overflow: hidden; }
+.proj-circle-1 {
+  position: absolute; width: 300px; height: 300px;
+  border-radius: 50%; border: 1px solid rgba(0,229,192,0.12);
+  top: -100px; right: -80px;
+  animation: orbFloat 8s ease-in-out infinite;
+}
+.proj-circle-2 {
+  position: absolute; width: 180px; height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,229,192,0.08), transparent);
+  bottom: 30%; left: 30%;
+}
+.proj-glyph {
+  position: absolute; font-size: 8rem; opacity: 0.04;
+  font-family: var(--font-display); font-weight: 900;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  color: var(--teal);
+  user-select: none;
+}
+.proj-dot-grid {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(0,229,192,0.12) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.4;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 0%, transparent 100%);
+}
+
+/* =========================================
+   IDENTITY / BRAND SECTION
+   ========================================= */
+#identity {
+  background: var(--deep);
+  overflow: hidden;
+}
+.identity-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 6rem; align-items: center; margin-top: 4rem;
+}
+.identity-text {}
+.identity-visual {
+  position: relative; height: 480px; display: flex;
+  align-items: center; justify-content: center;
+}
+.berber-canvas {
+  width: 100%; height: 100%;
+  position: absolute; inset: 0;
+}
+
+/* =========================================
+   CONTACT
+   ========================================= */
+#contact {
+  background: var(--void);
+  padding: 10rem 4rem;
+}
+.contact-inner {
+  max-width: 800px; margin: 0 auto; text-align: center;
+}
+.contact-title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 6rem);
+  font-weight: 800; line-height: 1;
+  letter-spacing: -0.03em; margin-bottom: 1.5rem;
+}
+.contact-title span { color: var(--teal); }
+.contact-body {
+  font-size: 1rem; color: var(--muted);
+  line-height: 1.8; margin-bottom: 3.5rem; max-width: 480px; margin-left: auto; margin-right: auto;
+}
+.contact-form {
+  display: flex; gap: 1rem;
+  max-width: 500px; margin: 0 auto 4rem;
+}
+.contact-input {
+  flex: 1;
+  background: var(--deep);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  color: var(--bone);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  transition: border-color 0.3s, background 0.3s;
+  outline: none;
+}
+.contact-input::placeholder { color: var(--muted); }
+.contact-input:focus {
+  border-color: var(--border-glow);
+  background: rgba(13,18,32,0.8);
+}
+.contact-btn {
+  font-family: var(--font-display);
+  font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--void);
+  background: var(--teal);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  transition: all 0.3s var(--ease-out);
+  white-space: nowrap;
+  box-shadow: 0 0 20px rgba(0,229,192,0.2);
+}
+.contact-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(0,229,192,0.4);
+}
+.contact-links {
+  display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap;
+}
+.contact-link {
+  font-family: var(--font-display);
+  font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted);
+  display: flex; align-items: center; gap: 0.6rem;
+  transition: color 0.3s, transform 0.3s;
+}
+.contact-link:hover { color: var(--teal); transform: translateY(-2px); }
+.contact-link svg { opacity: 0.6; }
+
+/* =========================================
+   FOOTER
+   ========================================= */
+footer {
+  background: var(--abyss);
+  border-top: 1px solid var(--border);
+  padding: 4rem;
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 2rem;
+}
+.footer-logo {
+  font-family: var(--font-display);
+  font-weight: 800; font-size: 1rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+.footer-logo span { color: var(--teal); }
+.footer-copy {
+  font-size: 0.78rem; color: var(--faint);
+  text-align: center; flex: 1; min-width: 200px;
+}
+.footer-links {
+  display: flex; gap: 2rem; flex-wrap: wrap;
+}
+.footer-links a {
+  font-family: var(--font-display);
+  font-size: 0.7rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); transition: color 0.3s;
+}
+.footer-links a:hover { color: var(--teal); }
+
+/* =========================================
+   FLOATING GEOMETRY
+   ========================================= */
+.geo-float {
+  position: absolute; pointer-events: none; z-index: 0;
+  opacity: 0.06;
+}
+.geo-float svg { width: 100%; height: 100%; }
+
+/* =========================================
+   RTL SUPPORT
+   ========================================= */
+html[dir="rtl"] .section-label::before { display: none; }
+html[dir="rtl"] .section-label::after { content: ''; width: 24px; height: 1px; background: var(--teal); }
+html[dir="rtl"] .vision-step:hover { transform: translateX(-8px); }
+html[dir="rtl"] nav { direction: rtl; }
+html[dir="rtl"] .hero-content { direction: rtl; }
+html[dir="rtl"] .hero-eyebrow { flex-direction: row-reverse; }
+html[dir="rtl"] .btn-primary svg { transform: scaleX(-1); }
+html[dir="rtl"] .btn-primary:hover svg { transform: scaleX(-1) translateX(-4px); }
+
+/* Language hidden class */
+.lang-fr, .lang-en, .lang-ar { }
+[data-lang="fr"] .lang-en, [data-lang="fr"] .lang-ar,
+[data-lang="en"] .lang-fr, [data-lang="en"] .lang-ar,
+[data-lang="ar"] .lang-fr, [data-lang="ar"] .lang-en { display: none; }
+
+/* =========================================
+   KEYFRAMES
+   ========================================= */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { transform: translateY(110%); }
+  to { transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+
+/* =========================================
+   MEDIA QUERIES
+   ========================================= */
+@media (max-width: 1024px) {
+  nav { padding: 1.5rem 2.5rem; }
+  nav.scrolled { padding: 1rem 2.5rem; }
+  .nav-links { gap: 2rem; }
+  section { padding: 6rem 2.5rem; }
+  #philosophy { padding: 8rem 2.5rem; }
+  #contact { padding: 8rem 2.5rem; }
+  footer { padding: 3rem 2.5rem; }
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .vision-grid { gap: 4rem; }
+  .identity-grid { gap: 4rem; }
+}
+@media (max-width: 768px) {
+  nav { padding: 1.2rem 1.5rem; }
+  nav.scrolled { padding: 0.9rem 1.5rem; }
+  .nav-links, .nav-cta { display: none; }
+  .hamburger { display: flex; }
+  .mobile-nav { display: flex; }
+  section { padding: 5rem 1.5rem; }
+  #philosophy { padding: 6rem 1.5rem; }
+  #contact { padding: 6rem 1.5rem; }
+  footer { padding: 2.5rem 1.5rem; }
+  .services-grid { grid-template-columns: 1fr; }
+  .manifesto-stats { grid-template-columns: 1fr; }
+  .vision-grid { grid-template-columns: 1fr; }
+  .identity-grid { grid-template-columns: 1fr; }
+  .vision-visual { height: 280px; }
+  .projects-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+  .project-card:first-child { grid-row: span 1; min-height: 300px; }
+  .footer-inner { flex-direction: column; text-align: center; }
+  .footer-links { justify-content: center; }
+  .contact-form { flex-direction: column; }
+  .work-header { flex-direction: column; align-items: flex-start; }
+  .hero-line:nth-child(1) .hero-line-inner { font-size: clamp(3rem, 13vw, 5rem); }
+  .hero-line:nth-child(2) .hero-line-inner { font-size: clamp(2.5rem, 11vw, 4.5rem); }
+  .hero-line:nth-child(3) .hero-line-inner { font-size: clamp(3rem, 13vw, 5rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body data-lang="fr">
+
+<!-- CURSOR -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-inner">
+    <div class="loader-ring"></div>
+    <div class="loader-wordmark">NUMIDIA<span>.</span>PRIME</div>
+  </div>
+  <div class="loader-progress"><div class="loader-progress-bar" id="loaderBar"></div></div>
+  <div class="loader-pct" id="loaderPct">0%</div>
+</div>
+
+<!-- NAVIGATION -->
+<nav id="navbar">
+  <a href="#" class="nav-logo" aria-label="Numidia Prime">
+    <div class="nav-logo-mark" aria-hidden="true"></div>
+    NUMIDIA<span class="dot">.</span>PRIME
+  </a>
+  <ul class="nav-links" role="navigation" aria-label="Navigation principale">
+    <li><a href="#philosophy" class="lang-fr">Vision</a><a href="#philosophy" class="lang-en">Vision</a><a href="#philosophy" class="lang-ar">الرؤية</a></li>
+    <li><a href="#services" class="lang-fr">Services</a><a href="#services" class="lang-en">Services</a><a href="#services" class="lang-ar">خدمات</a></li>
+    <li><a href="#work" class="lang-fr">Projets</a><a href="#work" class="lang-en">Work</a><a href="#work" class="lang-ar">أعمال</a></li>
+    <li><a href="#contact" class="lang-fr">Contact</a><a href="#contact" class="lang-en">Contact</a><a href="#contact" class="lang-ar">تواصل</a></li>
+  </ul>
+  <div class="nav-lang" role="group" aria-label="Sélection de langue">
+    <button class="lang-btn active" data-lang-switch="fr" aria-pressed="true">FR</button>
+    <button class="lang-btn" data-lang-switch="en" aria-pressed="false">EN</button>
+    <button class="lang-btn" data-lang-switch="ar" aria-pressed="false">ع</button>
+  </div>
+  <a href="#contact" class="nav-cta lang-fr">Démarrer</a>
+  <a href="#contact" class="nav-cta lang-en">Start</a>
+  <a href="#contact" class="nav-cta lang-ar">ابدأ</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav" aria-hidden="true" role="dialog" aria-label="Navigation mobile">
+  <a href="#philosophy" onclick="closeMobileNav()"><span class="lang-fr">Vision</span><span class="lang-en">Vision</span><span class="lang-ar">الرؤية</span></a>
+  <a href="#services" onclick="closeMobileNav()"><span class="lang-fr">Services</span><span class="lang-en">Services</span><span class="lang-ar">خدمات</span></a>
+  <a href="#work" onclick="closeMobileNav()"><span class="lang-fr">Projets</span><span class="lang-en">Work</span><span class="lang-ar">أعمال</span></a>
+  <a href="#contact" onclick="closeMobileNav()"><span class="lang-fr">Contact</span><span class="lang-en">Contact</span><span class="lang-ar">تواصل</span></a>
+  <div class="mobile-nav-lang">
+    <button class="lang-btn active" data-lang-switch="fr">FR</button>
+    <button class="lang-btn" data-lang-switch="en">EN</button>
+    <button class="lang-btn" data-lang-switch="ar">ع</button>
+  </div>
+</div>
+
+<!-- ========== HERO ========== -->
+<section id="hero" aria-label="Hero Numidia Prime">
+  <div class="hero-bg">
+    <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
+    <div class="hero-gradient" aria-hidden="true"></div>
+    <div class="hero-grid" aria-hidden="true"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-eyebrow" aria-hidden="true">
+      <span class="lang-fr">Algérie · Monde Digital</span>
+      <span class="lang-en">Algeria · Digital World</span>
+      <span class="lang-ar">الجزائر · العالم الرقمي</span>
+    </div>
+    <h1 class="hero-headline" id="heroHeadline">
+      <span class="hero-line" aria-hidden="true"><span class="hero-line-inner lang-fr">Le Futur</span><span class="hero-line-inner lang-en">The Future</span><span class="hero-line-inner lang-ar">المستقبل</span></span>
+      <span class="hero-line" aria-hidden="true"><span class="hero-line-inner lang-fr">est</span><span class="hero-line-inner lang-en">is</span><span class="hero-line-inner lang-ar">بدأ</span></span>
+      <span class="hero-line" aria-hidden="true"><span class="hero-line-inner lang-fr">Ici.</span><span class="hero-line-inner lang-en">Here.</span><span class="hero-line-inner lang-ar">هنا.</span></span>
+    </h1>
+    <p class="hero-sub lang-fr">De l'Algérie au monde digital — une expérience premium à la croisée de l'héritage, de l'innovation et de l'ambition internationale.</p>
+    <p class="hero-sub lang-en">From Algeria to the digital world — a premium experience at the intersection of heritage, innovation, and international ambition.</p>
+    <p class="hero-sub lang-ar">من الجزائر إلى العالم الرقمي — تجربة فريدة عند تقاطع الإرث والابتكار والطموح الدولي.</p>
+    <div class="hero-actions">
+      <a href="#work" class="btn-primary">
+        <span class="lang-fr">Explorer nos projets</span>
+        <span class="lang-en">Explore our work</span>
+        <span class="lang-ar">استكشف أعمالنا</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#philosophy" class="btn-ghost">
+        <span class="lang-fr">Notre vision</span>
+        <span class="lang-en">Our vision</span>
+        <span class="lang-ar">رؤيتنا</span>
+      </a>
+    </div>
+  </div>
+  <div class="hero-scroll" aria-hidden="true">
+    <div class="scroll-line"></div>
+    <span class="scroll-text lang-fr">Défiler</span>
+    <span class="scroll-text lang-en">Scroll</span>
+    <span class="scroll-text lang-ar">تمرير</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section" aria-hidden="true">
+  <div class="marquee-track" id="marqueeTrack">
+    <span class="marquee-item">Innovation Digitale</span>
+    <span class="marquee-item">Algérie Premium</span>
+    <span class="marquee-item">Digital Innovation</span>
+    <span class="marquee-item">Future Forward</span>
+    <span class="marquee-item">الإبداع الرقمي</span>
+    <span class="marquee-item">Experience Design</span>
+    <span class="marquee-item">Technologie Avancée</span>
+    <span class="marquee-item">نوميديا برايم</span>
+    <span class="marquee-item">Brand Identity</span>
+    <span class="marquee-item">International Vision</span>
+    <!-- Duplicate for seamless loop -->
+    <span class="marquee-item">Innovation Digitale</span>
+    <span class="marquee-item">Algérie Premium</span>
+    <span class="marquee-item">Digital Innovation</span>
+    <span class="marquee-item">Future Forward</span>
+    <span class="marquee-item">الإبداع الرقمي</span>
+    <span class="marquee-item">Experience Design</span>
+    <span class="marquee-item">Technologie Avancée</span>
+    <span class="marquee-item">نوميديا برايم</span>
+    <span class="marquee-item">Brand Identity</span>
+    <span class="marquee-item">International Vision</span>
+  </div>
+</div>
+
+<!-- ========== PHILOSOPHY ========== -->
+<section id="philosophy" aria-labelledby="philTitle">
+  <div class="container philosophy-inner">
+    <div class="section-label reveal" aria-label="Section">
+      <span class="lang-fr">Manifeste</span>
+      <span class="lang-en">Manifesto</span>
+      <span class="lang-ar">البيان</span>
+    </div>
+    <h2 class="manifesto-text reveal reveal-delay-1" id="philTitle">
+      <span class="lang-fr">Nous ne construisons pas des <span class="accent">sites web</span>.<br>Nous créons des <span class="gold">expériences</span> qui définissent le futur.</span>
+      <span class="lang-en">We don't build <span class="accent">websites</span>.<br>We craft <span class="gold">experiences</span> that define the future.</span>
+      <span class="lang-ar">نحن لا نبني <span class="accent">مواقع</span>.<br>نحن نصنع <span class="gold">تجارب</span> تُعرِّف المستقبل.</span>
+    </h2>
+    <p class="manifesto-body reveal reveal-delay-2">
+      <span class="lang-fr">Numidia Prime est né d'une conviction : l'Algérie mérite sa place parmi les grandes marques digitales mondiales. Nous portons l'héritage numide — géométrie, précision, audace — et le projetons dans l'ère numérique.</span>
+      <span class="lang-en">Numidia Prime was born from a conviction: Algeria deserves its place among the world's great digital brands. We carry the Numidian heritage — geometry, precision, boldness — and project it into the digital era.</span>
+      <span class="lang-ar">وُلدت نوميديا برايم من قناعة راسخة: الجزائر تستحق مكانها بين كبرى العلامات الرقمية العالمية. نحمل الإرث النوميدي — هندسة، دقة، جرأة — ونُسقطه في العصر الرقمي.</span>
+    </p>
+    <div class="manifesto-stats reveal reveal-delay-3" role="list" aria-label="Statistiques">
+      <div class="stat-item" role="listitem">
+        <div class="stat-number" data-count="100">0</div>
+        <div class="stat-label lang-fr">Projets Livrés</div>
+        <div class="stat-label lang-en">Projects Delivered</div>
+        <div class="stat-label lang-ar">مشروع منجز</div>
+      </div>
+      <div class="stat-item" role="listitem">
+        <div class="stat-number" data-count="40">0</div>
+        <div class="stat-label lang-fr">Clients Internationaux</div>
+        <div class="stat-label lang-en">International Clients</div>
+        <div class="stat-label lang-ar">عميل دولي</div>
+      </div>
+      <div class="stat-item" role="listitem">
+        <div class="stat-number" data-count="5">0</div>
+        <div class="stat-label lang-fr">Années d'Excellence</div>
+        <div class="stat-label lang-en">Years of Excellence</div>
+        <div class="stat-label lang-ar">سنوات من التميز</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SERVICES ========== -->
+<section id="services" aria-labelledby="servTitle">
+  <div class="container">
+    <div style="text-align:center; max-width: 600px; margin: 0 auto;">
+      <div class="section-label reveal" style="justify-content:center;">
+        <span class="lang-fr">Ce que nous créons</span>
+        <span class="lang-en">What we create</span>
+        <span class="lang-ar">ما نصنعه</span>
+      </div>
+      <h2 class="section-title reveal reveal-delay-1" id="servTitle">
+        <span class="lang-fr">Services<br><em>Premium</em></span>
+        <span class="lang-en">Premium<br><em>Services</em></span>
+        <span class="lang-ar">خدمات<br><em>متميزة</em></span>
+      </h2>
+    </div>
+    <div class="services-grid reveal reveal-delay-2" role="list">
+
+      <div class="service-card" role="listitem">
+        <span class="service-num">01</span>
+        <div class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="8" width="40" height="28" rx="3" stroke="#00E5C0" stroke-width="1.5"/>
+            <path d="M16 44H32" stroke="#00E5C0" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M24 36V44" stroke="#00E5C0" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M14 22L19 17L23 21L29 15L34 20" stroke="#C8973A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="service-name">
+          <span class="lang-fr">Design d'Expérience</span>
+          <span class="lang-en">Experience Design</span>
+          <span class="lang-ar">تصميم التجربة</span>
+        </h3>
+        <p class="service-desc">
+          <span class="lang-fr">Interfaces qui séduisent, convertissent et laissent une empreinte mémorable. Chaque pixel porte une intention.</span>
+          <span class="lang-en">Interfaces that captivate, convert, and leave a lasting impression. Every pixel carries intention.</span>
+          <span class="lang-ar">واجهات تسحر وتحوّل وتترك أثراً دائماً. كل بيكسل يحمل غاية.</span>
+        </p>
+        <span class="service-arrow">
+          <span class="lang-fr">Découvrir</span>
+          <span class="lang-en">Explore</span>
+          <span class="lang-ar">استكشف</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M12 7L8 3M12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+
+      <div class="service-card" role="listitem">
+        <span class="service-num">02</span>
+        <div class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="18" stroke="#00E5C0" stroke-width="1.5"/>
+            <circle cx="24" cy="24" r="10" stroke="#C8973A" stroke-width="1.2" stroke-dasharray="3 3"/>
+            <circle cx="24" cy="24" r="3" fill="#00E5C0"/>
+            <path d="M24 6V10M24 38V42M6 24H10M38 24H42" stroke="#00E5C0" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="service-name">
+          <span class="lang-fr">Identité de Marque</span>
+          <span class="lang-en">Brand Identity</span>
+          <span class="lang-ar">هوية العلامة</span>
+        </h3>
+        <p class="service-desc">
+          <span class="lang-fr">Des identités visuelles qui transcendent les tendances. Une signature unique qui traverse le temps et les cultures.</span>
+          <span class="lang-en">Visual identities that transcend trends. A unique signature that crosses time and cultures.</span>
+          <span class="lang-ar">هويات بصرية تتجاوز الصيحات. توقيع فريد يعبر الزمن والثقافات.</span>
+        </p>
+        <span class="service-arrow">
+          <span class="lang-fr">Découvrir</span><span class="lang-en">Explore</span><span class="lang-ar">استكشف</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M12 7L8 3M12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+
+      <div class="service-card" role="listitem">
+        <span class="service-num">03</span>
+        <div class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none">
+            <rect x="6" y="6" width="36" height="36" rx="4" stroke="#00E5C0" stroke-width="1.5"/>
+            <path d="M14 18L20 24L14 30" stroke="#C8973A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 30H34" stroke="#00E5C0" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="service-name">
+          <span class="lang-fr">Développement Web</span>
+          <span class="lang-en">Web Development</span>
+          <span class="lang-ar">تطوير الويب</span>
+        </h3>
+        <p class="service-desc">
+          <span class="lang-fr">Architectures techniques performantes et élégantes. Du code propre au service d'expériences extraordinaires.</span>
+          <span class="lang-en">High-performance, elegant technical architectures. Clean code in service of extraordinary experiences.</span>
+          <span class="lang-ar">هندسات تقنية عالية الأداء وأنيقة. كود نظيف في خدمة تجارب استثنائية.</span>
+        </p>
+        <span class="service-arrow">
+          <span class="lang-fr">Découvrir</span><span class="lang-en">Explore</span><span class="lang-ar">استكشف</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M12 7L8 3M12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+
+      <div class="service-card" role="listitem">
+        <span class="service-num">04</span>
+        <div class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none">
+            <path d="M8 12H40V36H8V12Z" stroke="#00E5C0" stroke-width="1.5"/>
+            <path d="M16 20L24 28L32 20" stroke="#C8973A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 18H40" stroke="#00E5C0" stroke-width="1" opacity="0.4"/>
+            <circle cx="12" cy="15" r="1.5" fill="#00E5C0"/>
+            <circle cx="17" cy="15" r="1.5" fill="#C8973A" opacity="0.6"/>
+          </svg>
+        </div>
+        <h3 class="service-name">
+          <span class="lang-fr">Stratégie Digitale</span>
+          <span class="lang-en">Digital Strategy</span>
+          <span class="lang-ar">الاستراتيجية الرقمية</span>
+        </h3>
+        <p class="service-desc">
+          <span class="lang-fr">Positionnement, croissance, présence internationale. Une vision stratégique pour dominer votre espace digital.</span>
+          <span class="lang-en">Positioning, growth, international presence. Strategic vision to dominate your digital space.</span>
+          <span class="lang-ar">تموضع، نمو، حضور دولي. رؤية استراتيجية للهيمنة على فضائك الرقمي.</span>
+        </p>
+        <span class="service-arrow">
+          <span class="lang-fr">Découvrir</span><span class="lang-en">Explore</span><span class="lang-ar">استكشف</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M12 7L8 3M12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+
+      <div class="service-card" role="listitem">
+        <span class="service-num">05</span>
+        <div class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none">
+            <path d="M24 4L44 16V32L24 44L4 32V16L24 4Z" stroke="#00E5C0" stroke-width="1.5"/>
+            <path d="M24 4V44M4 16L44 16M4 32L44 32" stroke="#00E5C0" stroke-width="0.8" opacity="0.3"/>
+            <circle cx="24" cy="24" r="5" stroke="#C8973A" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <h3 class="service-name">
+          <span class="lang-fr">Motion Design</span>
+          <span class="lang-en">Motion Design</span>
+          <span class="lang-ar">تصميم الحركة</span>
+        </h3>
+        <p class="service-desc">
+          <span class="lang-fr">Animations qui donnent vie aux marques. Du motion graphics aux expériences interactives immersives.</span>
+          <span class="lang-en">Animations that bring brands to life. From motion graphics to immersive interactive experiences.</span>
+          <span class="lang-ar">رسوم متحركة تبعث الحياة في العلامات التجارية. من الجرافيك المتحرك إلى التجارب التفاعلية الغامرة.</span>
+        </p>
+        <span class="service-arrow">
+          <span class="lang-fr">Découvrir</span><span class="lang-en">Explore</span><span class="lang-ar">استكشف</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M12 7L8 3M12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+
+      <div class="service-card" role="listitem">
+        <span class="service-num">06</span>
+        <div class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none">
+            <rect x="10" y="6" width="28" height="36" rx="4" stroke="#00E5C0" stroke-width="1.5"/>
+            <path d="M16 16H32M16 22H32M16 28H24" stroke="#C8973A" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="36" cy="36" r="8" fill="#070A14" stroke="#00E5C0" stroke-width="1.5"/>
+            <path d="M33 36H39M36 33V39" stroke="#00E5C0" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="service-name">
+          <span class="lang-fr">Contenu & Création</span>
+          <span class="lang-en">Content & Creation</span>
+          <span class="lang-ar">المحتوى والإبداع</span>
+        </h3>
+        <p class="service-desc">
+          <span class="lang-fr">Storytelling visuel et éditorial qui captive et convertit. Contenu premium pour des marques qui ont des choses à dire.</span>
+          <span class="lang-en">Visual and editorial storytelling that captivates and converts. Premium content for brands with things to say.</span>
+          <span class="lang-ar">سرد بصري وتحريري يأسر ويحوّل. محتوى متميز للعلامات التي تملك ما تقوله.</span>
+        </p>
+        <span class="service-arrow">
+          <span class="lang-fr">Découvrir</span><span class="lang-en">Explore</span><span class="lang-ar">استكشف</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M12 7L8 3M12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== VISION ========== -->
+<section id="vision" aria-labelledby="visionTitle">
+  <div class="container">
+    <div class="vision-grid">
+      <div class="vision-visual reveal-left" aria-hidden="true">
+        <div class="vision-orb vision-orb-3"></div>
+        <div class="vision-orb vision-orb-2"></div>
+        <div class="vision-orb vision-orb-1"></div>
+        <div class="vision-satellite"></div>
+        <div class="vision-satellite"></div>
+        <div class="vision-satellite"></div>
+        <div class="vision-center-dot"></div>
+        <canvas id="berberCanvas" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.35;" aria-hidden="true"></canvas>
+      </div>
+      <div>
+        <div class="section-label reveal">
+          <span class="lang-fr">Notre Processus</span>
+          <span class="lang-en">Our Process</span>
+          <span class="lang-ar">منهجيتنا</span>
+        </div>
+        <h2 class="section-title reveal reveal-delay-1" id="visionTitle">
+          <span class="lang-fr">Comment nous<br><em>pensons</em></span>
+          <span class="lang-en">How we<br><em>think</em></span>
+          <span class="lang-ar">كيف<br><em>نُفكر</em></span>
+        </h2>
+        <div class="vision-steps">
+          <div class="vision-step reveal reveal-delay-1">
+            <span class="step-num">01</span>
+            <div class="step-content">
+              <h3 class="step-title">
+                <span class="lang-fr">Comprendre</span>
+                <span class="lang-en">Understand</span>
+                <span class="lang-ar">الفهم</span>
+              </h3>
+              <p class="step-desc">
+                <span class="lang-fr">Nous plongeons dans votre univers, vos ambitions, votre marché, pour définir une direction créative juste et distincte.</span>
+                <span class="lang-en">We immerse ourselves in your universe, ambitions, and market to define a precise and distinctive creative direction.</span>
+                <span class="lang-ar">نغوص في عالمك وطموحاتك وسوقك لتحديد توجه إبداعي دقيق ومتميز.</span>
+              </p>
+            </div>
+          </div>
+          <div class="vision-step reveal reveal-delay-2">
+            <span class="step-num">02</span>
+            <div class="step-content">
+              <h3 class="step-title">
+                <span class="lang-fr">Concevoir</span>
+                <span class="lang-en">Design</span>
+                <span class="lang-ar">التصميم</span>
+              </h3>
+              <p class="step-desc">
+                <span class="lang-fr">Chaque solution est architecturée avec précision — visuellement, techniquement, émotionnellement — pour créer un impact mesurable.</span>
+                <span class="lang-en">Each solution is architected with precision — visually, technically, emotionally — to create measurable impact.</span>
+                <span class="lang-ar">كل حل مُهندَس بدقة — بصرياً وتقنياً وعاطفياً — لخلق تأثير قابل للقياس.</span>
+              </p>
+            </div>
+          </div>
+          <div class="vision-step reveal reveal-delay-3">
+            <span class="step-num">03</span>
+            <div class="step-content">
+              <h3 class="step-title">
+                <span class="lang-fr">Livrer & Évoluer</span>
+                <span class="lang-en">Deliver & Evolve</span>
+                <span class="lang-ar">التسليم والتطور</span>
+              </h3>
+              <p class="step-desc">
+                <span class="lang-fr">Nous livrons des œuvres, pas des livrables. Puis nous les faisons évoluer avec vous dans le temps.</span>
+                <span class="lang-en">We deliver works of craft, not deliverables. Then we evolve them with you over time.</span>
+                <span class="lang-ar">نُسلّم أعمالاً فنية لا مجرد تسليمات. ثم نطورها معك عبر الزمن.</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== WORK ========== -->
+<section id="work" aria-labelledby="workTitle">
+  <div class="container">
+    <div class="work-header">
+      <div>
+        <div class="section-label reveal">
+          <span class="lang-fr">Portfolio Sélectionné</span>
+          <span class="lang-en">Selected Work</span>
+          <span class="lang-ar">أعمال مختارة</span>
+        </div>
+        <h2 class="section-title reveal reveal-delay-1" id="workTitle">
+          <span class="lang-fr">Projets<br><em>Récents</em></span>
+          <span class="lang-en">Recent<br><em>Projects</em></span>
+          <span class="lang-ar">مشاريع<br><em>حديثة</em></span>
+        </h2>
+      </div>
+      <a href="#contact" class="btn-ghost reveal reveal-delay-2" style="height:fit-content;">
+        <span class="lang-fr">Voir tout</span>
+        <span class="lang-en">View all</span>
+        <span class="lang-ar">عرض الكل</span>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M12 7L8 3M12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+    <div class="projects-grid reveal">
+
+      <div class="project-card">
+        <div class="project-bg proj-bg-1">
+          <div class="proj-inner-art">
+            <div class="proj-circle-1"></div>
+            <div class="proj-circle-2"></div>
+            <div class="proj-dot-grid"></div>
+            <div class="proj-glyph" aria-hidden="true">N</div>
+          </div>
+        </div>
+        <div class="project-overlay"></div>
+        <div class="project-info">
+          <span class="project-cat lang-fr">Design Interactif</span>
+          <span class="project-cat lang-en">Interactive Design</span>
+          <span class="project-cat lang-ar">تصميم تفاعلي</span>
+          <h3 class="project-name lang-fr">Atlas Platform</h3>
+          <h3 class="project-name lang-en">Atlas Platform</h3>
+          <h3 class="project-name lang-ar">منصة أطلس</h3>
+          <span class="project-year">2024</span>
+          <div class="project-hover-tag">
+            <span class="lang-fr">Voir le projet</span>
+            <span class="lang-en">View project</span>
+            <span class="lang-ar">شاهد المشروع</span>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-bg proj-bg-2">
+          <div class="proj-inner-art">
+            <div class="proj-dot-grid"></div>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+              <div style="width:80px;height:80px;border:1px solid rgba(0,229,192,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                <div style="width:40px;height:40px;background:linear-gradient(135deg,rgba(0,229,192,0.3),rgba(200,151,58,0.2));border-radius:50%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="project-overlay"></div>
+        <div class="project-info">
+          <span class="project-cat lang-fr">Identité de Marque</span>
+          <span class="project-cat lang-en">Brand Identity</span>
+          <span class="project-cat lang-ar">هوية العلامة</span>
+          <h3 class="project-name-sm lang-fr">Sahel Studio</h3>
+          <h3 class="project-name-sm lang-en">Sahel Studio</h3>
+          <h3 class="project-name-sm lang-ar">استوديو الساحل</h3>
+          <span class="project-year">2024</span>
+          <div class="project-hover-tag">
+            <span class="lang-fr">Voir</span>
+            <span class="lang-en">View</span>
+            <span class="lang-ar">عرض</span>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-bg proj-bg-3">
+          <div class="proj-inner-art">
+            <div class="proj-dot-grid"></div>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+              <svg width="120" height="120" viewBox="0 0 120 120" opacity="0.3">
+                <polygon points="60,10 110,80 10,80" fill="none" stroke="#00E5C0" stroke-width="1"/>
+                <polygon points="60,30 90,80 30,80" fill="none" stroke="#C8973A" stroke-width="0.8"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="project-overlay"></div>
+        <div class="project-info">
+          <span class="project-cat lang-fr">Web App</span>
+          <span class="project-cat lang-en">Web App</span>
+          <span class="project-cat lang-ar">تطبيق ويب</span>
+          <h3 class="project-name-sm lang-fr">Numida Finance</h3>
+          <h3 class="project-name-sm lang-en">Numida Finance</h3>
+          <h3 class="project-name-sm lang-ar">نميدا فاينانس</h3>
+          <span class="project-year">2023</span>
+          <div class="project-hover-tag">
+            <span class="lang-fr">Voir</span>
+            <span class="lang-en">View</span>
+            <span class="lang-ar">عرض</span>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== IDENTITY ========== -->
+<section id="identity" aria-labelledby="identTitle">
+  <div class="container">
+    <div class="identity-grid">
+      <div>
+        <div class="section-label reveal">
+          <span class="lang-fr">Notre ADN</span>
+          <span class="lang-en">Our DNA</span>
+          <span class="lang-ar">حمضنا النووي</span>
+        </div>
+        <h2 class="section-title reveal reveal-delay-1" id="identTitle">
+          <span class="lang-fr">L'Algérie porte<br>en elle les <em>codes</em><br>du futur</span>
+          <span class="lang-en">Algeria carries<br>within it the <em>codes</em><br>of the future</span>
+          <span class="lang-ar">الجزائر تحمل<br>في داخلها <em>شفرات</em><br>المستقبل</span>
+        </h2>
+        <p class="section-desc reveal reveal-delay-2">
+          <span class="lang-fr">La géométrie amazighe — l'une des plus anciennes formes de codage visuel au monde — ressemble à du code. Numidia Prime honore cet héritage en le projetant vers l'avenir.</span>
+          <span class="lang-en">Amazigh geometry — one of the world's oldest forms of visual coding — looks like circuit traces. Numidia Prime honors this heritage by projecting it toward the future.</span>
+          <span class="lang-ar">الهندسة الأمازيغية — إحدى أقدم أشكال الترميز البصري في العالم — تشبه دوائر الكود البرمجي. نوميديا برايم تُكرّم هذا الإرث بإسقاطه نحو المستقبل.</span>
+        </p>
+        <div style="margin-top: 3rem; display: flex; gap: 2rem; flex-wrap: wrap;">
+          <div style="flex:1; min-width:140px;">
+            <div style="width:40px;height:2px;background:var(--teal);margin-bottom:1rem;"></div>
+            <h4 style="font-family:var(--font-display);font-size:0.85rem;font-weight:700;letter-spacing:0.05em;margin-bottom:0.5rem;">
+              <span class="lang-fr">Précision</span><span class="lang-en">Precision</span><span class="lang-ar">الدقة</span>
+            </h4>
+            <p style="font-size:0.82rem;color:var(--muted);line-height:1.7;">
+              <span class="lang-fr">Chaque détail compte.</span><span class="lang-en">Every detail matters.</span><span class="lang-ar">كل تفصيل مهم.</span>
+            </p>
+          </div>
+          <div style="flex:1; min-width:140px;">
+            <div style="width:40px;height:2px;background:var(--gold);margin-bottom:1rem;"></div>
+            <h4 style="font-family:var(--font-display);font-size:0.85rem;font-weight:700;letter-spacing:0.05em;margin-bottom:0.5rem;">
+              <span class="lang-fr">Audace</span><span class="lang-en">Boldness</span><span class="lang-ar">الجرأة</span>
+            </h4>
+            <p style="font-size:0.82rem;color:var(--muted);line-height:1.7;">
+              <span class="lang-fr">Nous n'imitons pas.</span><span class="lang-en">We don't imitate.</span><span class="lang-ar">نحن لا نُقلّد.</span>
+            </p>
+          </div>
+          <div style="flex:1; min-width:140px;">
+            <div style="width:40px;height:2px;background:linear-gradient(90deg,var(--teal),var(--gold));margin-bottom:1rem;"></div>
+            <h4 style="font-family:var(--font-display);font-size:0.85rem;font-weight:700;letter-spacing:0.05em;margin-bottom:0.5rem;">
+              <span class="lang-fr">Héritage</span><span class="lang-en">Heritage</span><span class="lang-ar">الإرث</span>
+            </h4>
+            <p style="font-size:0.82rem;color:var(--muted);line-height:1.7;">
+              <span class="lang-fr">Ancrés dans nos racines.</span><span class="lang-en">Rooted in our origins.</span><span class="lang-ar">متجذرون في أصولنا.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="identity-visual reveal-right">
+        <canvas id="tifinagCanvas" style="width:100%;height:100%;position:absolute;inset:0;" aria-hidden="true"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONTACT ========== -->
+<section id="contact" aria-labelledby="contactTitle">
+  <div class="contact-inner">
+    <div class="section-label reveal" style="justify-content:center;">
+      <span class="lang-fr">Commencer</span>
+      <span class="lang-en">Get Started</span>
+      <span class="lang-ar">ابدأ الآن</span>
+    </div>
+    <h2 class="contact-title reveal reveal-delay-1" id="contactTitle">
+      <span class="lang-fr">Construisons<br>ensemble le <span>futur</span></span>
+      <span class="lang-en">Let's build<br>the <span>future</span> together</span>
+      <span class="lang-ar">لنبنِ<br><span>المستقبل</span> معاً</span>
+    </h2>
+    <p class="contact-body reveal reveal-delay-2">
+      <span class="lang-fr">Vous avez un projet ambitieux ? Nous avons la créativité, la technologie et la vision pour le transformer en réalité.</span>
+      <span class="lang-en">You have an ambitious project? We have the creativity, technology, and vision to transform it into reality.</span>
+      <span class="lang-ar">هل لديك مشروع طموح؟ لدينا الإبداع والتكنولوجيا والرؤية لتحويله إلى واقع.</span>
+    </p>
+    <div class="contact-form reveal reveal-delay-3" role="form" aria-label="Formulaire de contact">
+      <input
+        type="email"
+        class="contact-input"
+        id="contactEmail"
+        placeholder="votre@email.com"
+        aria-label="Adresse email"
+      >
+      <button class="contact-btn" onclick="handleContact()" aria-label="Envoyer">
+        <span class="lang-fr">Envoyer</span>
+        <span class="lang-en">Send</span>
+        <span class="lang-ar">إرسال</span>
+      </button>
+    </div>
+    <div class="contact-links reveal reveal-delay-4">
+      <a href="mailto:hello@numidia-prime.com" class="contact-link" aria-label="Email">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M1 5L8 9L15 5" stroke="currentColor" stroke-width="1.2"/></svg>
+        hello@numidia-prime.com
+      </a>
+      <a href="#" class="contact-link" aria-label="LinkedIn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M4 7V12M4 5V5.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 12V9C8 8 8.5 7 10 7C11.5 7 12 8 12 9V12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 7V12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        LinkedIn
+      </a>
+      <a href="#" class="contact-link" aria-label="Instagram">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="4" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.2"/><circle cx="11.5" cy="4.5" r="0.8" fill="currentColor"/></svg>
+        Instagram
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-logo">NUMIDIA<span>.</span>PRIME</div>
+    <p class="footer-copy">
+      <span class="lang-fr">© 2024 Numidia Prime. De l'Algérie au Monde Digital.</span>
+      <span class="lang-en">© 2024 Numidia Prime. From Algeria to the Digital World.</span>
+      <span class="lang-ar">© 2024 نوميديا برايم. من الجزائر إلى العالم الرقمي.</span>
+    </p>
+    <nav class="footer-links" aria-label="Liens footer">
+      <a href="#philosophy"><span class="lang-fr">Vision</span><span class="lang-en">Vision</span><span class="lang-ar">الرؤية</span></a>
+      <a href="#services"><span class="lang-fr">Services</span><span class="lang-en">Services</span><span class="lang-ar">خدمات</span></a>
+      <a href="#work"><span class="lang-fr">Projets</span><span class="lang-en">Work</span><span class="lang-ar">أعمال</span></a>
+    </nav>
+  </div>
+</footer>
+
+<!-- =========================================
+     JAVASCRIPT
+     ========================================= -->
+<script>
+// ===== LOADER =====
+(function() {
+  const bar = document.getElementById('loaderBar');
+  const pct = document.getElementById('loaderPct');
+  let progress = 0;
+  const interval = setInterval(() => {
+    progress += Math.random() * 18 + 5;
+    if (progress >= 100) {
+      progress = 100;
+      clearInterval(interval);
+      bar.style.width = '100%';
+      pct.textContent = '100%';
+      setTimeout(() => {
+        document.getElementById('loader').classList.add('hidden');
+        document.body.style.overflow = '';
+        initAnimations();
+      }, 600);
+    } else {
+      bar.style.width = progress + '%';
+      pct.textContent = Math.floor(progress) + '%';
+    }
+  }, 160);
+  document.body.style.overflow = 'hidden';
+})();
+
+// ===== CUSTOM CURSOR =====
+(function() {
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  if (!dot || !ring) return;
+  let mouseX = 0, mouseY = 0;
+  let ringX = 0, ringY = 0;
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    dot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+  });
+  function animateRing() {
+    ringX += (mouseX - ringX) * 0.12;
+    ringY += (mouseY - ringY) * 0.12;
+    ring.style.transform = `translate(${ringX}px, ${ringY}px)`;
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+  document.querySelectorAll('a, button, .service-card, .project-card, .vision-step').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hovered'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hovered'));
+  });
+  document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; ring.style.opacity = '0'; });
+  document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; ring.style.opacity = '1'; });
+})();
+
+// ===== NAVBAR SCROLL =====
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 60) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+});
+
+// ===== HAMBURGER =====
+function closeMobileNav() {
+  const mNav = document.getElementById('mobileNav');
+  const ham = document.getElementById('hamburger');
+  mNav.classList.remove('open');
+  ham.classList.remove('open');
+  ham.setAttribute('aria-expanded', 'false');
+  mNav.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+document.getElementById('hamburger').addEventListener('click', function() {
+  const mNav = document.getElementById('mobileNav');
+  const isOpen = mNav.classList.contains('open');
+  if (isOpen) { closeMobileNav(); }
+  else {
+    mNav.classList.add('open');
+    this.classList.add('open');
+    this.setAttribute('aria-expanded', 'true');
+    mNav.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+});
+
+// ===== LANGUAGE SWITCHING =====
+function setLanguage(lang) {
+  document.body.setAttribute('data-lang', lang);
+  const html = document.documentElement;
+  if (lang === 'ar') {
+    html.setAttribute('dir', 'rtl');
+    html.setAttribute('lang', 'ar');
+  } else {
+    html.setAttribute('dir', 'ltr');
+    html.setAttribute('lang', lang);
+  }
+  document.querySelectorAll('[data-lang-switch]').forEach(btn => {
+    const isActive = btn.getAttribute('data-lang-switch') === lang;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-pressed', isActive.toString());
+  });
+}
+document.querySelectorAll('[data-lang-switch]').forEach(btn => {
+  btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang-switch')));
+});
+
+// ===== REVEAL ON SCROLL =====
+function initReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+}
+
+// ===== COUNTER ANIMATION =====
+function animateCounters() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.getAttribute('data-count'));
+        let current = 0;
+        const duration = 1800;
+        const start = performance.now();
+        const suffix = el.getAttribute('data-suffix') || '+';
+        const animate = (now) => {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          const ease = 1 - Math.pow(1 - progress, 3);
+          current = Math.floor(ease * target);
+          el.textContent = current + (progress < 1 ? '' : suffix);
+          if (progress < 1) requestAnimationFrame(animate);
+          else el.textContent = target + suffix;
+        };
+        requestAnimationFrame(animate);
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('[data-count]').forEach(el => {
+    el.setAttribute('data-suffix', '+');
+    observer.observe(el);
+  });
+}
+
+// ===== HERO CANVAS — Animated Particle Field =====
+function initHeroCanvas() {
+  const canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [], mouseX = -1000, mouseY = -1000;
+  const NUM = window.innerWidth < 768 ? 60 : 120;
+
+  function resize() {
+    w = canvas.width = canvas.offsetWidth;
+    h = canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (let i = 0; i < NUM; i++) {
+    particles.push({
+      x: Math.random() * 2000, y: Math.random() * 2000,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 1.5 + 0.5,
+      alpha: Math.random() * 0.4 + 0.1
+    });
+  }
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX; mouseY = e.clientY;
+  });
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    // Update
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+      if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
+    });
+    // Draw connections
+    const DIST = 140;
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < DIST) {
+          const alpha = (1 - d / DIST) * 0.12;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(0,229,192,${alpha})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    // Mouse connections
+    particles.forEach(p => {
+      const dx = p.x - mouseX; const dy = p.y - mouseY;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      if (d < 200) {
+        const alpha = (1 - d / 200) * 0.35;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(mouseX, mouseY);
+        ctx.strokeStyle = `rgba(0,229,192,${alpha})`;
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+    });
+    // Particles
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0,229,192,${p.alpha})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ===== BERBER / TIFINAGH CANVAS =====
+function initTifinagCanvas() {
+  const canvas = document.getElementById('tifinagCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, t = 0;
+
+  function resize() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    w = canvas.width = rect.width || 480;
+    h = canvas.height = rect.height || 480;
+  }
+  resize();
+  window.addEventListener('resize', () => { resize(); });
+
+  // Amazigh Tifinagh-inspired geometric forms
+  const GLYPHS = [
+    // Cross + diamond
+    (ctx, cx, cy, s) => {
+      ctx.beginPath(); ctx.moveTo(cx, cy - s); ctx.lineTo(cx, cy + s); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx - s, cy); ctx.lineTo(cx + s, cy); ctx.stroke();
+    },
+    // Diamond
+    (ctx, cx, cy, s) => {
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - s); ctx.lineTo(cx + s, cy);
+      ctx.lineTo(cx, cy + s); ctx.lineTo(cx - s, cy);
+      ctx.closePath(); ctx.stroke();
+    },
+    // Triangle
+    (ctx, cx, cy, s) => {
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - s); ctx.lineTo(cx + s*0.87, cy + s*0.5);
+      ctx.lineTo(cx - s*0.87, cy + s*0.5); ctx.closePath(); ctx.stroke();
+    },
+    // X mark
+    (ctx, cx, cy, s) => {
+      const d = s * 0.7;
+      ctx.beginPath(); ctx.moveTo(cx-d,cy-d); ctx.lineTo(cx+d,cy+d); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx+d,cy-d); ctx.lineTo(cx-d,cy+d); ctx.stroke();
+    },
+    // Circle
+    (ctx, cx, cy, s) => {
+      ctx.beginPath(); ctx.arc(cx, cy, s*0.8, 0, Math.PI*2); ctx.stroke();
+    },
+    // Square
+    (ctx, cx, cy, s) => {
+      ctx.strokeRect(cx - s*0.75, cy - s*0.75, s*1.5, s*1.5);
+    },
+  ];
+
+  const COLS = 8, ROWS = 8;
+  const glyphMap = [];
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      glyphMap.push({
+        glyph: Math.floor(Math.random() * GLYPHS.length),
+        size: Math.random() * 16 + 8,
+        delay: Math.random() * Math.PI * 2,
+        speed: Math.random() * 0.4 + 0.2,
+        type: Math.random() < 0.4 ? 'teal' : Math.random() < 0.5 ? 'gold' : 'faint'
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    const cellW = w / COLS; const cellH = h / ROWS;
+
+    glyphMap.forEach((g, i) => {
+      const col = i % COLS; const row = Math.floor(i / COLS);
+      const cx = (col + 0.5) * cellW;
+      const cy = (row + 0.5) * cellH;
+      const pulse = Math.sin(t * g.speed + g.delay);
+      const alpha = (pulse + 1) * 0.5;
+
+      if (g.type === 'teal') {
+        ctx.strokeStyle = `rgba(0,229,192,${alpha * 0.5})`;
+        ctx.lineWidth = 0.8;
+      } else if (g.type === 'gold') {
+        ctx.strokeStyle = `rgba(200,151,58,${alpha * 0.4})`;
+        ctx.lineWidth = 0.6;
+      } else {
+        ctx.strokeStyle = `rgba(240,237,230,${alpha * 0.08})`;
+        ctx.lineWidth = 0.5;
+      }
+      GLYPHS[g.glyph](ctx, cx, cy, g.size * (0.7 + alpha * 0.4));
+    });
+
+    t += 0.008;
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ===== BERBER CANVAS in vision section =====
+function initBerberCanvas() {
+  const canvas = document.getElementById('berberCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, t = 0;
+  function resize() {
+    const rect = canvas.parentElement ? canvas.parentElement.getBoundingClientRect() : {width:400,height:400};
+    w = canvas.width = rect.width || 400;
+    h = canvas.height = rect.height || 400;
+  }
+  resize(); window.addEventListener('resize', resize);
+  const points = [];
+  for (let i = 0; i < 12; i++) {
+    const angle = (i / 12) * Math.PI * 2;
+    points.push({ a: angle, r: 0.35 * Math.min(w, h), speed: (Math.random()-0.5)*0.003, off: Math.random()*Math.PI*2 });
+  }
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    const cx = w/2, cy = h/2;
+    ctx.save();
+    // outer hexagon trace
+    for (let ring = 1; ring <= 3; ring++) {
+      const radius = ring * 60;
+      const sides = 6;
+      ctx.beginPath();
+      for (let s = 0; s <= sides; s++) {
+        const a = (s / sides) * Math.PI * 2 - Math.PI / 6;
+        const x = cx + Math.cos(a + t * 0.1) * radius;
+        const y = cy + Math.sin(a + t * 0.1) * radius;
+        s === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = `rgba(0,229,192,${0.06 * (4 - ring)})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+    // rotating cross
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(t * 0.05);
+    ctx.beginPath();
+    ctx.moveTo(0, -70); ctx.lineTo(0, 70);
+    ctx.moveTo(-70, 0); ctx.lineTo(70, 0);
+    ctx.strokeStyle = 'rgba(200,151,58,0.12)';
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+    ctx.restore();
+    ctx.restore();
+    t += 1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ===== CONTACT HANDLER =====
+function handleContact() {
+  const input = document.getElementById('contactEmail');
+  if (input && input.value) {
+    const btn = document.querySelector('.contact-btn');
+    const origInnerHTML = btn.innerHTML;
+    btn.innerHTML = '✓';
+    btn.style.background = 'var(--gold)';
+    setTimeout(() => {
+      btn.innerHTML = origInnerHTML;
+      btn.style.background = 'var(--teal)';
+      input.value = '';
+    }, 2500);
+  }
+}
+
+// ===== PARALLAX =====
+function initParallax() {
+  const hero = document.getElementById('hero');
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        const grid = hero.querySelector('.hero-grid');
+        if (grid) grid.style.transform = `translateY(${scrollY * 0.3}px)`;
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+}
+
+// ===== INIT =====
+function initAnimations() {
+  initReveal();
+  animateCounters();
+  initHeroCanvas();
+  initTifinagCanvas();
+  initBerberCanvas();
+  initParallax();
+}
+
+// Smooth anchor scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>
