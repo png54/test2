@@ -1,0 +1,39 @@
+/*
+Theme Name: CGEA Premium Theme
+Theme URI: https://cgea.gov.ma/theme
+Author: CGEA Digital Team
+Author URI: https://cgea.gov.ma
+Description: Thème WordPress sur mesure, hautement optimisé, bilingue (Français/Arabe) pour le Conseil Général de l'Énergie et de l'Aménagement. Intègre Polylang, ACF Pro, et supporte les Custom Post Types pour une administration simplifiée.
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: cgea-theme
+Domain Path: /languages
+Tags: governmental, dual-language, translation-ready, custom-menu, sticky-header, rtl-support, layout-animations, seo-optimized
+*/
+
+/* Réinitialisations de base et variables système WordPress */
+body {
+    font-family: 'Poppins', 'Tajawal', sans-serif;
+    color: #1A1A1A;
+    background-color: #FFFFFF;
+    margin: 0;
+    padding: 0;
+}
+
+body.rtl {
+    direction: rtl;
+    font-family: 'Tajawal', sans-serif;
+}
+
+.wp-block-button__link {
+    background-color: #D71920;
+    color: #FFFFFF;
+    border-radius: 4px;
+    padding: 12px 24px;
+    transition: background-color 0.2s ease;
+}
+
+.wp-block-button__link:hover {
+    background-color: #C4141B;
+}
